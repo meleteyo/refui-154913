@@ -381,6 +381,34 @@
     }
   });
 
+  /* ── Font size scaler ───────────────────────────────── */
+  const FS_KEY = "pt154913.fontScale";
+  const fsButtons = [...document.querySelectorAll(".fs-btn")];
+  const allowedScales = fsButtons.map(b => parseFloat(b.dataset.scale));
+
+  function applyFontScale(scale) {
+    const s = allowedScales.includes(scale) ? scale : 1;
+    document.documentElement.style.fontSize = (16 * s) + "px";
+    fsButtons.forEach(b => {
+      b.classList.toggle("active", parseFloat(b.dataset.scale) === s);
+    });
+    try { localStorage.setItem(FS_KEY, String(s)); } catch (_) {}
+  }
+
+  fsButtons.forEach(b => {
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      applyFontScale(parseFloat(b.dataset.scale));
+    });
+  });
+
+  let initialScale = 1;
+  try {
+    const saved = parseFloat(localStorage.getItem(FS_KEY) || "1");
+    if (allowedScales.includes(saved)) initialScale = saved;
+  } catch (_) {}
+  applyFontScale(initialScale);
+
   // Initial render
   renderState();
 })();
