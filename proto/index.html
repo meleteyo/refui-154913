@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공공기관 입찰 정보 구독 SaaS — 라이브 프로토타입 (#154913)</title>
+  <meta name="description" content="공공기관 입찰 정보 및 데이터 분석 구독형 웹 서비스 운영자 콘솔 라이브 프로토타입 (#154913)" />
+
+  <!-- Pretendard (한글 최적화) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN (JIT) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Pretendard Variable"', 'Pretendard', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'SF Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- React 18 + Babel (proto 트랙 전용) -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- prop-types (Recharts 의존성) — 버전 고정으로 redirect 회피 -->
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+  <!-- Recharts UMD (analytics 차트) -->
+  <script src="https://unpkg.com/recharts@2.10.4/umd/Recharts.js"></script>
+
+  <style>
+    html, body {
+      font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+      background: #020617;
+      color: #f1f5f9;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    .font-mono, code, .tabular { font-family: 'JetBrains Mono', monospace; }
+
+    /* ⚠️ Aurora opacity ≤ 0.10 (proto 가독성) */
+    .aurora-bg {
+      position: fixed; inset: 0; z-index: -10; background: #020617;
+    }
+    .aurora-bg::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.08;
+      background:
+        radial-gradient(at 15% 25%, rgba(139,92,246,0.4), transparent 50%),
+        radial-gradient(at 85% 75%, rgba(16,185,129,0.3), transparent 50%);
+    }
+
+    /* 화면 전환 fade-in */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    .scr { animation: fadeUp 0.32s ease-out; }
+
+    /* 모바일 가드 */
+    .mobile-guard { display: none; }
+    @media (max-width: 1023px) {
+      .mobile-guard {
+        display: flex; position: fixed; inset: 0; z-index: 100;
+        background: rgba(2,6,23,0.95); backdrop-filter: blur(20px);
+        align-items: center; justify-content: center; padding: 2rem; text-align: center;
+      }
+      .app-root { filter: blur(4px); pointer-events: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="aurora-bg" aria-hidden="true"></div>
+
+  <!-- 데이터 + 컴포넌트 + 8화면 (순서 중요) -->
+  <script src="./data.js"></script>
+  <script type="text/babel" src="./components.jsx"></script>
+  <script type="text/babel" src="./tweaks-panel.jsx"></script>
+  <!-- 회원사 화면 4종 -->
+  <script type="text/babel" src="./search.jsx"></script>
+  <script type="text/babel" src="./analytics.jsx"></script>
+  <script type="text/babel" src="./tender-detail.jsx"></script>
+  <script type="text/babel" src="./scraps.jsx"></script>
+  <!-- 운영자 콘솔 4종 -->
+  <script type="text/babel" src="./dashboard.jsx"></script>
+  <script type="text/babel" src="./console.jsx"></script>
+  <script type="text/babel" src="./history.jsx"></script>
+  <script type="text/babel" src="./templates.jsx"></script>
+
+  <!-- App shell -->
+  <div id="app-root" class="app-root"></div>
+
+  <!-- 모바일 가드 오버레이 -->
+  <div class="mobile-guard">
+    <div class="rounded-2xl bg-slate-900 border border-slate-700 p-8 max-w-sm">
+      <div class="text-2xl mb-3">🖥</div>
+      <h2 class="text-lg font-bold mb-2">데스크탑에서 열어주세요</h2>
+      <p class="text-sm text-slate-400">
+        본 프로토타입은 1024px 이상 해상도에서 최적화되어 있습니다.<br>
+        텍스트만 보시려면 <a href="../refui/" class="text-purple-400 underline">레퍼런스 UI</a>를 이용해주세요.
+      </p>
+    </div>
+  </div>
+
+  <!-- 데모 데이터 가드 배지 (필수) -->
+  <div class="fixed bottom-3 left-3 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-[10px] text-amber-300 font-medium backdrop-blur-xl">
+    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+    데모 데이터 · 실데이터 미연결
+  </div>
+
+  <!-- App mount -->
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      // 기본 진입은 회원사 핵심 가치(검색)부터 노출
+      const [route, setRoute] = useState({ name: 'search' });
+      const [tweaks, setTweaks] = useState(window.TWEAK_DEFAULTS);
+
+      const setTweak = (key, value) => setTweaks((prev) => ({ ...prev, [key]: value }));
+
+      // v2.1: demo iframe 호환성 — window.__navigate 노출
+      React.useEffect(() => {
+        window.__navigate = (name, payload = null) => setRoute({ name, payload });
+        return () => { delete window.__navigate; };
+      }, []);
+
+      const screens = {
+        // 회원사 (UC11~24)
+        search:       window.Search,
+        analytics:    window.Analytics,
+        tenderDetail: window.TenderDetail,
+        scraps:       window.Scraps,
+        // 운영자 콘솔 (UC41~43)
+        dashboard: window.Dashboard,
+        console:   window.Console,
+        history:   window.History,
+        settings:  window.Templates,
+      };
+      const Screen = screens[route.name] || window.Search;
+
+      const screenLabel = {
+        search:       '01 다중 조건 검색',
+        analytics:    '02 분석 대시보드',
+        tenderDetail: '03 공고 상세',
+        scraps:       '04 스크랩·참여예정',
+        dashboard: '05 운영자 대시보드',
+        console:   '06 결제 환불 위저드',
+        history:   '07 결제 이력·감사 로그',
+        settings:  '08 공지·알림 템플릿',
+      }[route.name];
+
+      // sidebar 메뉴 정의 (회원사 위 / 운영자 아래)
+      const memberMenus = [
+        ['search',       '다중 조건 검색', 'search'],
+        ['analytics',    '분석 대시보드',  'chart'],
+        ['tenderDetail', '공고 상세',     'document'],
+        ['scraps',       '스크랩·참여예정','star'],
+      ];
+      const adminMenus = [
+        ['dashboard', '운영자 대시보드', 'home'],
+        ['console',   '결제 환불',      'send'],
+        ['history',   '결제 이력',      'history'],
+        ['settings',  '공지·알림 템플릿','template'],
+      ];
+
+      const renderMenu = ([key, label, icon]) => (
+        <button key={key} onClick={() => setRoute({ name: key, payload: null })}
+          className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm transition ${
+            route.name === key
+              ? 'bg-slate-800 text-white'
+              : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+          }`}>
+          <window.Icon name={icon} className="w-4 h-4" />
+          {label}
+        </button>
+      );
+
+      return (
+        <div className="min-h-screen flex" style={{ '--brand': tweaks.brandColor }}>
+          {/* Sidebar */}
+          <aside className="w-60 bg-slate-950 border-r border-slate-800 p-4 flex flex-col">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-lg" style={{ background: tweaks.brandColor }}></div>
+              <div>
+                <div className="font-bold text-sm">{tweaks.brandName}</div>
+                <div className="text-[10px] text-slate-500 font-mono">#154913</div>
+              </div>
+            </div>
+            <nav className="flex-1 space-y-1 overflow-y-auto">
+              {/* 회원사 섹션 */}
+              <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-400/70 px-3 pb-1.5 pt-1">
+                회원사 화면
+              </div>
+              {memberMenus.map(renderMenu)}
+
+              {/* 운영자 섹션 */}
+              <div className="text-[10px] font-mono uppercase tracking-wider text-amber-400/70 px-3 pb-1.5 pt-4">
+                운영자 콘솔
+              </div>
+              {adminMenus.map(renderMenu)}
+            </nav>
+            <div className="mt-4 pt-4 border-t border-slate-800 text-[10px] text-slate-600 font-mono leading-relaxed">
+              운영자 + 회원사 콘솔 v0.2<br/>
+              EPM UC11·UC21·UC22·UC23<br/>
+              UC24·UC41·UC42·UC43
+            </div>
+          </aside>
+
+          {/* Main */}
+          <main className="flex-1 overflow-auto" data-screen-label={screenLabel}>
+            <div className="scr p-8" key={route.name}>
+              <Screen route={route} navigate={(name, payload) => setRoute({ name, payload })} tweaks={tweaks} />
+            </div>
+          </main>
+
+          {/* Tweaks Panel */}
+          <window.TweaksPanel title="Tweaks · #154913">
+            <window.TweakSection label="브랜드" />
+            <window.TweakText
+              label="브랜드명"
+              value={tweaks.brandName || ''}
+              onChange={(v) => setTweak('brandName', v)} />
+            <window.TweakColor
+              label="브랜드 컬러"
+              value={tweaks.brandColor || '#a855f7'}
+              onChange={(v) => setTweak('brandColor', v)} />
+
+            <window.TweakSection label="레이아웃" />
+            <window.TweakRadio
+              label="밀도 (density)"
+              value={tweaks.density || 'comfortable'}
+              options={['compact', 'comfortable', 'comfy']}
+              onChange={(v) => setTweak('density', v)} />
+
+            <window.TweakSection label="환불 정책 (환불 위저드 전용)" />
+            <window.TweakRadio
+              label="policyMode"
+              value={tweaks.policyMode || 'PRIORITY'}
+              options={['PRIORITY', 'BROADCAST']}
+              onChange={(v) => setTweak('policyMode', v)} />
+            <div className="text-[10px] text-slate-500/80 leading-relaxed pt-1">
+              <strong>PRIORITY</strong>: 즉시 전액 환불 (사용자 친화)<br/>
+              <strong>BROADCAST</strong>: 일할 환불 (PG 약관 우선)<br/>
+              <span className="text-amber-300/80">※ &lsquo;결제 환불&rsquo; 화면 Step 3에서만 의미 있음</span>
+            </div>
+          </window.TweaksPanel>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('app-root')).render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공공 입찰 정보 구독 서비스 — 일반 고객용</title>
+  <meta name="description" content="위시켓 #154913 · 공공기관 입찰 정보 구독 서비스 · 회원사 일일 시간 80% 절감 · 22년 경력 시니어 개발자" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Pretendard Variable"', 'Pretendard', 'system-ui', 'sans-serif'] } } } };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="./styles.css" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+      background: #020617;
+      color: #f1f5f9;
+      -webkit-font-smoothing: antialiased;
+    }
+    .aurora-bg { position: fixed; inset: 0; z-index: -10; background: #020617; }
+    .aurora-bg::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.4;
+      background:
+        radial-gradient(at 15% 25%, rgba(139,92,246,0.35), transparent 50%),
+        radial-gradient(at 85% 75%, rgba(16,185,129,0.25), transparent 50%),
+        radial-gradient(at 50% 50%, rgba(236,72,153,0.15), transparent 45%);
+    }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
+    .grad-text { background: linear-gradient(to right, #a78bfa, #f472b6, #34d399); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .countup { font-variant-numeric: tabular-nums; }
+    .pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] > summary .chevron { transform: rotate(90deg); }
+    .chevron { transition: transform 0.2s; }
+    .flow-step {
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body data-client-type="nonit">
+  <div class="aurora-bg" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
+      <a href="./index.html" class="flex items-center gap-3 hover:opacity-80">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-emerald-500 shadow-lg shadow-purple-500/30"></div>
+        <div>
+          <div class="font-bold text-sm leading-tight">공공 입찰 정보 구독 서비스</div>
+          <div class="text-[0.65rem] text-slate-400 flex items-center gap-1.5">
+            <span>WISHKET</span>
+            <span class="font-mono text-purple-400">#154913</span>
+            <span class="text-slate-600">·</span>
+            <span>일반 고객용</span>
+          </div>
+        </div>
+      </a>
+      <nav class="ml-auto hidden lg:flex items-center gap-1 text-xs text-slate-300">
+        <a href="#how" class="px-2.5 py-1 rounded hover:bg-white/5">동작 방식</a>
+        <a href="#effect" class="px-2.5 py-1 rounded hover:bg-white/5">효과</a>
+        <a href="#roi" class="px-2.5 py-1 rounded hover:bg-white/5">ROI 계산기</a>
+        <a href="#faq" class="px-2.5 py-1 rounded hover:bg-white/5">자주 묻는 질문</a>
+        <a href="#timeline" class="px-2.5 py-1 rounded hover:bg-white/5">일정</a>
+        <a href="#cta" class="ml-2 px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-200 hover:bg-purple-500/30">미팅 요청</a>
+      </nav>
+      <div class="ml-auto lg:hidden">
+        <a href="./it.html" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/40 text-xs text-cyan-200">IT 버전 →</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="max-w-6xl mx-auto px-6 pt-16 pb-12">
+    <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 mb-6">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </span>
+      위시켓 #154913 · 일반 고객용 · 기술 용어 없음
+    </div>
+    <h1 class="text-4xl md:text-6xl font-bold leading-tight tracking-tight max-w-4xl">
+      공고를 빠짐없이 모니터링,<br/>
+      <span class="grad-text">적정 입찰가는 데이터로 결정.</span>
+    </h1>
+    <p class="mt-6 text-lg text-slate-300 max-w-2xl leading-relaxed">
+      매일 3~4시간 들이던 입찰 정보 모니터링을 30분으로 줄이고,
+      직관에 의존하던 투찰 금액 산정을 데이터 기반 의사결정으로 바꾸는 B2B 구독 서비스.
+    </p>
+
+    <!-- Top 3 Insights (비IT 버전) -->
+    <div class="mt-10 grid md:grid-cols-3 gap-4">
+      <div class="glass rounded-xl p-5 border-l-4 border-emerald-500">
+        <div class="text-[0.65rem] font-mono text-emerald-300 mb-2">효과 01</div>
+        <div class="text-sm font-semibold mb-2">일일 시간 80% 절감</div>
+        <p class="text-xs text-slate-400 leading-relaxed">매일 3~4시간 → 30분~1시간으로. 회원사 담당자가 본업에 집중 가능.</p>
+      </div>
+      <div class="glass rounded-xl p-5 border-l-4 border-purple-500">
+        <div class="text-[0.65rem] font-mono text-purple-300 mb-2">효과 02</div>
+        <div class="text-sm font-semibold mb-2">투찰가 산정 90% 단축</div>
+        <p class="text-xs text-slate-400 leading-relaxed">과거 1~2시간 직관 작업 → 10~15분 데이터 기반 의사결정.</p>
+      </div>
+      <div class="glass rounded-xl p-5 border-l-4 border-pink-500">
+        <div class="text-[0.65rem] font-mono text-pink-300 mb-2">효과 03</div>
+        <div class="text-sm font-semibold mb-2">자사 정기 매출 기반</div>
+        <p class="text-xs text-slate-400 leading-relaxed">자동 정기 결제 + 무료/유료 권한 분리로 안정적 MRR 비즈니스 모델.</p>
+      </div>
+    </div>
+
+    <!-- Trust Badges -->
+    <div class="mt-10 flex flex-wrap gap-3 text-xs">
+      <span class="pill bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">✓ 22년 경력 시니어 개발자</span>
+      <span class="pill bg-purple-500/10 text-purple-300 border border-purple-500/30">✓ 1개월 무상 유지보수 포함</span>
+      <span class="pill bg-pink-500/10 text-pink-300 border border-pink-500/30">✓ 위시켓 안전결제 사용</span>
+      <span class="pill bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">✓ 매주 동작 화면 시연</span>
+      <span class="pill bg-amber-500/10 text-amber-300 border border-amber-500/30">✓ 카드 정보 미저장 (안전)</span>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how" class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">시스템이 이렇게 동작합니다</h2>
+    </div>
+    <p class="text-slate-400 text-sm mb-8 max-w-2xl">기술 용어 없이 "무엇을 해주는가" 중심으로 설명드립니다.</p>
+
+    <!-- Flow 1: 가입 → 결제 → 사용 -->
+    <div class="mb-10">
+      <h3 class="text-xs font-mono text-emerald-300 mb-4">▌가입부터 사용까지</h3>
+      <div class="grid md:grid-cols-6 gap-3">
+        <div class="flow-step">
+          <div class="text-2xl mb-2">①</div>
+          <div class="text-xs font-semibold mb-1">기업 가입</div>
+          <div class="text-[0.7rem] text-slate-400">담당자 정보 입력</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">②</div>
+          <div class="text-xs font-semibold mb-1">사업자번호 자동 검증</div>
+          <div class="text-[0.7rem] text-slate-400">국세청 자동 확인</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">③</div>
+          <div class="text-xs font-semibold mb-1">이메일 인증</div>
+          <div class="text-[0.7rem] text-slate-400">링크 클릭으로 활성화</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">④</div>
+          <div class="text-xs font-semibold mb-1">구독 결제</div>
+          <div class="text-[0.7rem] text-slate-400">카드 한 번 등록</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">⑤</div>
+          <div class="text-xs font-semibold mb-1">자동 영수증 발송</div>
+          <div class="text-[0.7rem] text-slate-400">이메일로 즉시</div>
+        </div>
+        <div class="flow-step border-emerald-500/50 bg-emerald-500/10">
+          <div class="text-2xl mb-2">⑥</div>
+          <div class="text-xs font-semibold mb-1 text-emerald-300">전체 기능 사용</div>
+          <div class="text-[0.7rem] text-slate-400">바로 시작</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 2: 매일 업무 -->
+    <div class="mb-10">
+      <h3 class="text-xs font-mono text-purple-300 mb-4">▌회원사의 매일 업무</h3>
+      <div class="grid md:grid-cols-5 gap-3">
+        <div class="flow-step">
+          <div class="text-2xl mb-2">①</div>
+          <div class="text-xs font-semibold mb-1">로그인</div>
+          <div class="text-[0.7rem] text-slate-400">신규 공고 알림</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">②</div>
+          <div class="text-xs font-semibold mb-1">조건 검색</div>
+          <div class="text-[0.7rem] text-slate-400">지역·업종·금액·키워드</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">③</div>
+          <div class="text-xs font-semibold mb-1">공고 상세</div>
+          <div class="text-[0.7rem] text-slate-400">첨부파일 다운로드</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">④</div>
+          <div class="text-xs font-semibold mb-1">분석 대시보드</div>
+          <div class="text-[0.7rem] text-slate-400">추천 입찰가 차트</div>
+        </div>
+        <div class="flow-step border-emerald-500/50 bg-emerald-500/10">
+          <div class="text-2xl mb-2">⑤</div>
+          <div class="text-xs font-semibold mb-1 text-emerald-300">관심 공고 등록</div>
+          <div class="text-[0.7rem] text-slate-400">스크랩 / 참여 예정</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flow 3: 운영자 화면 -->
+    <div>
+      <h3 class="text-xs font-mono text-pink-300 mb-4">▌운영자가 직접 처리</h3>
+      <div class="grid md:grid-cols-4 gap-3">
+        <div class="flow-step">
+          <div class="text-2xl mb-2">①</div>
+          <div class="text-xs font-semibold mb-1">회원·결제 검색</div>
+          <div class="text-[0.7rem] text-slate-400">한 화면에서</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">②</div>
+          <div class="text-xs font-semibold mb-1">환불 즉시 처리</div>
+          <div class="text-[0.7rem] text-slate-400">버튼 클릭</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">③</div>
+          <div class="text-xs font-semibold mb-1">공지사항 작성</div>
+          <div class="text-[0.7rem] text-slate-400">발송까지 자동</div>
+        </div>
+        <div class="flow-step">
+          <div class="text-2xl mb-2">④</div>
+          <div class="text-xs font-semibold mb-1">모든 액션 자동 기록</div>
+          <div class="text-[0.7rem] text-slate-400">감사 추적 가능</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EFFECT (KPI) ============ -->
+  <section id="effect" class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">기대 효과</h2>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">실제 회원사의 일일 업무 시간 변화 (분 단위).</p>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+      <div class="glass rounded-2xl p-6">
+        <div class="text-[0.7rem] font-mono text-emerald-300 mb-2">일일 모니터링 시간</div>
+        <div class="flex items-baseline gap-2 mb-1">
+          <div class="countup text-4xl font-bold text-emerald-300">80</div>
+          <div class="text-lg text-slate-400">% 감소</div>
+        </div>
+        <div class="text-xs text-slate-400">3~4시간 → 30분~1시간</div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="text-[0.7rem] font-mono text-purple-300 mb-2">투찰가 산정 시간</div>
+        <div class="flex items-baseline gap-2 mb-1">
+          <div class="countup text-4xl font-bold text-purple-300">90</div>
+          <div class="text-lg text-slate-400">% 단축</div>
+        </div>
+        <div class="text-xs text-slate-400">1~2시간 → 10~15분</div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="text-[0.7rem] font-mono text-pink-300 mb-2">운영자 단건 처리</div>
+        <div class="flex items-baseline gap-2 mb-1">
+          <div class="countup text-4xl font-bold text-pink-300">60</div>
+          <div class="text-lg text-slate-400">% 빠르게</div>
+        </div>
+        <div class="text-xs text-slate-400">단일 어드민 화면</div>
+      </div>
+    </div>
+
+    <div class="glass rounded-2xl p-6">
+      <div class="text-xs font-mono text-slate-400 mb-3">회원사 일일 업무 시간 (분)</div>
+      <canvas id="chart-effect" height="120"></canvas>
+    </div>
+  </section>
+
+  <!-- ============ ROI Calculator ============ -->
+  <section id="roi" class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">ROI 계산기</h2>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">회원사 1곳이 본 서비스로 절약하는 시간·비용을 직접 확인.</p>
+
+    <div class="glass rounded-2xl p-6 md:p-8">
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Inputs -->
+        <div>
+          <div class="mb-6">
+            <label class="text-xs text-slate-400 mb-2 block">회원사 수: <span id="roi-members" class="text-emerald-300 font-bold">100</span>곳</label>
+            <input type="range" id="roi-members-slider" min="10" max="1000" value="100" step="10" class="w-full" />
+            <div class="flex justify-between text-[0.65rem] text-slate-500 mt-1"><span>10</span><span>1,000</span></div>
+          </div>
+          <div class="mb-6">
+            <label class="text-xs text-slate-400 mb-2 block">월 구독료: <span id="roi-price" class="text-purple-300 font-bold">100,000</span>원</label>
+            <input type="range" id="roi-price-slider" min="30000" max="500000" value="100000" step="10000" class="w-full" />
+            <div class="flex justify-between text-[0.65rem] text-slate-500 mt-1"><span>3만원</span><span>50만원</span></div>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 mb-2 block">유료 전환율: <span id="roi-conv" class="text-pink-300 font-bold">30</span>%</label>
+            <input type="range" id="roi-conv-slider" min="5" max="80" value="30" step="5" class="w-full" />
+            <div class="flex justify-between text-[0.65rem] text-slate-500 mt-1"><span>5%</span><span>80%</span></div>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="space-y-4">
+          <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5">
+            <div class="text-xs text-slate-400 mb-1">예상 월 매출 (MRR)</div>
+            <div id="roi-mrr" class="text-3xl font-bold text-emerald-300">3,000,000원</div>
+          </div>
+          <div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-5">
+            <div class="text-xs text-slate-400 mb-1">예상 연 매출 (ARR)</div>
+            <div id="roi-arr" class="text-3xl font-bold text-purple-300">36,000,000원</div>
+          </div>
+          <div class="bg-pink-500/10 border border-pink-500/30 rounded-xl p-5">
+            <div class="text-xs text-slate-400 mb-1">회원사 누적 시간 절약 (월)</div>
+            <div id="roi-savings" class="text-3xl font-bold text-pink-300">2,250 시간</div>
+          </div>
+          <p class="text-[0.65rem] text-slate-500">* 회원사 1곳당 월 75시간 절약 가정 (일 3시간 × 25일)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq" class="max-w-4xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">자주 묻는 질문</h2>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">미팅 전에 자주 받는 불안·질문에 미리 답변드립니다.</p>
+
+    <div class="space-y-2">
+      <details class="glass rounded-xl p-4 group" open>
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">기술이 너무 복잡해서 나중에 관리 못 하면 어떡하나요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          한국에서 가장 많이 쓰이는 표준 기술로만 만듭니다. 운영 매뉴얼을 한국어로 만들어드리고, 1개월 무상 유지보수 동안 운영자분과 함께 익히실 수 있게 도와드립니다. 나중에 다른 개발자에게 맡기셔도 받아갈 수 있는 수준으로 인수인계됩니다.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">결제가 잘못되면 회원사가 항의할 텐데요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          결제 실패는 자동으로 24시간 후 재시도되고, 3회 실패하면 자동으로 무료 등급으로 내립니다. 운영자 화면에서 환불·구독 취소도 직접 처리할 수 있습니다. 카드 정보는 저희가 안 가지고 있어서 정보 유출 위험이 없습니다.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">"추천 입찰가"가 틀리면 회원사들 신뢰가 떨어질 텐데요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          자신 없는 결과는 "신뢰도 %"와 함께 표시됩니다. 회원사가 "이건 참고만 하라"는 걸 알 수 있게 합니다. 추천 결과의 정확성은 자사가 미리 계산해서 주시는 부분이라, 만약 정확도가 부족하면 데이터를 더 보강하시는 것으로 해결됩니다.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">회원사가 늘어나면 운영비가 폭증하는 거 아닌가요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          기본 운영비는 월 50~100만원 정도이고, 회원이 100명 → 1,000명으로 늘어도 인프라 비용은 2~3배 정도만 늡니다. 회원사 1명당 구독료가 훨씬 크니까 비용은 문제 안 됩니다.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">데이터가 외부로 나가나요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          결제는 결제회사를 거치지만, 회원 정보·분석 데이터는 자사 클라우드 안에서만 다뤄집니다. 한국 클라우드 리전을 쓰면 데이터가 해외로 안 나갑니다.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">한 번도 같이 작업한 적 없는데 믿어도 되나요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          위시켓 안전결제를 사용하고, 매주 진행 보고 + 격주 동작 데모로 작업 증거를 누적합니다. Phase별 분할 결제(30/20/20/20/10)로 위험을 분산합니다. 첫 결제 30% 후 한 달 안에 가입~결제 흐름을 보실 수 있어, 그 시점에 계속 진행할지 결정하실 수 있습니다.
+        </div>
+      </details>
+
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <i data-lucide="help-circle" class="w-4 h-4 text-purple-300"></i>
+          <span class="font-medium text-sm flex-1">중간에 연락 안 되거나 그만두실 수도 있나요?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-sm text-slate-300 leading-relaxed">
+          1인 운영의 본질적 위험인데, 응답 24시간 이내 + 작업 증거 누적(매주 보고서 + 코드 저장소)으로 양도 가능한 상태를 항상 유지합니다. 위시켓 자체에서도 분쟁 시 보호받을 수 있습니다.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE ============ -->
+  <section id="timeline" class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">주차별 보실 수 있는 것</h2>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">매주 진행 보고 + 격주 동작 데모. 마지막에 큰 사고가 없는 진행 방식.</p>
+
+    <div class="space-y-3">
+      <div class="glass rounded-xl p-5 flex gap-4 items-start">
+        <div class="text-emerald-300 font-mono text-sm font-bold whitespace-nowrap">1~4주</div>
+        <div class="flex-1">
+          <div class="font-semibold mb-1">가입 → 결제 → 유료 권한 활성화</div>
+          <p class="text-xs text-slate-400">실제 카드로 가입~결제까지 끝까지 동작 시연. 이 시점에 계속 진행할지 결정 가능.</p>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-5 flex gap-4 items-start">
+        <div class="text-purple-300 font-mono text-sm font-bold whitespace-nowrap">5~7주</div>
+        <div class="flex-1">
+          <div class="font-semibold mb-1">공고 검색 화면</div>
+          <p class="text-xs text-slate-400">자사 데이터로 실제 검색·필터·페이지네이션 동작. 1초 안에 결과 표시.</p>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-5 flex gap-4 items-start">
+        <div class="text-pink-300 font-mono text-sm font-bold whitespace-nowrap">8~10주</div>
+        <div class="flex-1">
+          <div class="font-semibold mb-1">분석 대시보드 + 차트 5종</div>
+          <p class="text-xs text-slate-400">추천 투찰가·유사 공고 트렌드·낙찰 결과·시장 분석 차트. 핵심 차별점 시연.</p>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-5 flex gap-4 items-start">
+        <div class="text-cyan-300 font-mono text-sm font-bold whitespace-nowrap">11~14주</div>
+        <div class="flex-1">
+          <div class="font-semibold mb-1">스크랩 + 운영자 화면</div>
+          <p class="text-xs text-slate-400">관심 공고 스크랩·참여 예정 관리. 운영자가 회원·결제·공지를 모두 처리.</p>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-5 flex gap-4 items-start">
+        <div class="text-amber-300 font-mono text-sm font-bold whitespace-nowrap">15~18주</div>
+        <div class="flex-1">
+          <div class="font-semibold mb-1">디자인 마감 + 베타 회원 5명 모집</div>
+          <p class="text-xs text-slate-400">실 회원 5명이 베타 사용. 피드백 즉시 반영.</p>
+        </div>
+      </div>
+      <div class="glass rounded-xl p-5 flex gap-4 items-start border border-emerald-500/30 bg-emerald-500/5">
+        <div class="text-emerald-300 font-mono text-sm font-bold whitespace-nowrap">19~22주</div>
+        <div class="flex-1">
+          <div class="font-semibold mb-1 text-emerald-300">정식 오픈 + 인수인계</div>
+          <p class="text-xs text-slate-400">정식 운영 시작. 운영 매뉴얼·소스 코드·디자인 원본 모두 인수인계. 1개월 무상 유지보수 시작.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY-US (Simplified) ============ -->
+  <section class="max-w-6xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">다른 지원자와 무엇이 다른가요?</h2>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">5가지로 정리합니다.</p>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center"><i data-lucide="search" class="w-5 h-5 text-emerald-300"></i></div>
+          <div class="font-semibold">깊은 사전 분석</div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">미팅 전에 8개 분석 문서 + 22주 일정 + 리스크 15건을 미리 정리. "공고를 깊이 이해한 사람"이라는 신뢰를 미팅 시작 5분 안에 형성.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center"><i data-lucide="layers" class="w-5 h-5 text-purple-300"></i></div>
+          <div class="font-semibold">22년 경력 시니어</div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">정기결제·구독·보안처럼 사고가 나면 큰 영역에 강점. 산업은행 같은 금융 시스템 유지보수 경험으로 보안·감사 표준에 익숙.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center"><i data-lucide="zap" class="w-5 h-5 text-pink-300"></i></div>
+          <div class="font-semibold">매주 동작 시연</div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">AI 코딩 도구 + 22년 경력 결합으로 1주 만에 동작 화면. 피드백 즉시 반영. 마지막에 큰 사고가 없는 구조.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center"><i data-lucide="cpu" class="w-5 h-5 text-cyan-300"></i></div>
+          <div class="font-semibold">AI 활용 옵션</div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">"추천 입찰가"를 자사가 아닌 시스템이 계산해야 한다면, 22년 백엔드 + AI 통합 경력으로 별도 견적 가능. 시장에 거의 없는 조합.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 md:col-span-2">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center"><i data-lucide="shield-check" class="w-5 h-5 text-amber-300"></i></div>
+          <div class="font-semibold">분쟁 방지 5중 안전망</div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">위시켓 안전결제 + Phase별 분할 결제(30/20/20/20/10) + 매주 진행 보고서 + 매주 코드 저장소 공유 + 응답 24시간 이내. 첫 한 달 안에 가입~결제 흐름을 직접 시연드려, 그 시점에 계속 진행 여부 결정 가능.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="cta" class="max-w-6xl mx-auto px-6 py-16">
+    <div class="glass rounded-3xl p-8 md:p-12 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">미팅 30분이면 모든 것이 결정됩니다.</h2>
+      <p class="text-slate-300 mb-8 max-w-2xl mx-auto">가장 중요한 3가지(분석 알고리즘 출처 / 자사 데이터 / 결제 가맹)만 확인하면 견적·일정 확정 가능합니다.</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="https://www.wishket.com/project/154913/" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold shadow-lg shadow-purple-500/30">위시켓 메시지 보내기</a>
+        <a href="./it.html" class="px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5">IT 담당자용 →</a>
+      </div>
+      <div class="mt-8 pt-6 border-t border-white/5 text-xs text-slate-500 flex flex-wrap items-center justify-center gap-4">
+        <span>예산 800만원</span><span>·</span>
+        <span>180일</span><span>·</span>
+        <span>마감 2026-05-11</span><span>·</span>
+        <span>지원자 10명</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 mt-12 py-10 text-center text-sm text-slate-500">
+    <div class="max-w-6xl mx-auto px-6">
+      <p>이 페이지는 위시켓 프로젝트 <span class="font-mono text-purple-400">#154913</span> 지원용 레퍼런스 UI입니다. 실제 서비스가 아니며 데이터는 데모 목업입니다.</p>
+      <p class="mt-2">Generated by <span class="font-mono">wishket-refui</span> · 2026-04-28 · 일반 고객용</p>
+    </div>
+  </footer>
+
+  <script>
+    // Effect chart
+    if (typeof Chart !== 'undefined') {
+      Chart.defaults.color = '#94a3b8';
+      Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+      new Chart(document.getElementById('chart-effect'), {
+        type: 'bar',
+        data: {
+          labels: ['공고 모니터링', '관심 공고 정리', '투찰가 산정', '낙찰 추적'],
+          datasets: [
+            { label: '현재 (분/일)', data: [120, 30, 90, 60], backgroundColor: '#475569' },
+            { label: '도입 후 (분/일)', data: [10, 5, 12, 5], backgroundColor: '#a78bfa' }
+          ]
+        },
+        options: { plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } }, scales: { y: { beginAtZero: true, title: { display: true, text: '분' } } } }
+      });
+    }
+
+    // ROI Calculator
+    const roiMembers = document.getElementById('roi-members-slider');
+    const roiPrice = document.getElementById('roi-price-slider');
+    const roiConv = document.getElementById('roi-conv-slider');
+    function updateRoi() {
+      const m = parseInt(roiMembers.value);
+      const p = parseInt(roiPrice.value);
+      const c = parseInt(roiConv.value) / 100;
+      const paying = Math.floor(m * c);
+      const mrr = paying * p;
+      const arr = mrr * 12;
+      const savings = paying * 75;
+
+      document.getElementById('roi-members').textContent = m.toLocaleString();
+      document.getElementById('roi-price').textContent = p.toLocaleString();
+      document.getElementById('roi-conv').textContent = parseInt(roiConv.value);
+      document.getElementById('roi-mrr').textContent = mrr.toLocaleString() + '원';
+      document.getElementById('roi-arr').textContent = arr.toLocaleString() + '원';
+      document.getElementById('roi-savings').textContent = savings.toLocaleString() + ' 시간';
+    }
+    [roiMembers, roiPrice, roiConv].forEach(el => el.addEventListener('input', updateRoi));
+    updateRoi();
+
+    // Lucide icons
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // CountUp
+    document.querySelectorAll('.countup').forEach(el => {
+      const target = parseFloat(el.textContent.replace(/[^0-9.]/g, ''));
+      if (isNaN(target)) return;
+      let cur = 0;
+      const step = target / 30;
+      const interval = setInterval(() => {
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(interval); }
+        el.textContent = (target % 1 === 0) ? Math.floor(cur).toString() : cur.toFixed(1);
+      }, 30);
+    });
+  </script>
+</body>
+</html>

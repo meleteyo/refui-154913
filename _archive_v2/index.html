@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공공입찰 SaaS — 위시켓 #154913 사전 분석</title>
+  <meta name="description" content="공공 입찰 정보 구독 서비스 · 회원사 일일 시간 80% 단축 · 22년 시니어 풀스택 · 사전 분석 EPM 47 + RSM 7 + 라이브 프로토타입 8화면" />
+
+  <!-- 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Pretendard Variable"', 'Pretendard', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'SF Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Chart.js (시나리오 비교 1개만) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body class="font-sans bg-slate-950 text-slate-100 antialiased">
+  <div class="aurora-bg" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-6 py-3 flex items-center gap-4">
+      <a href="#top" class="flex items-center gap-3 hover:opacity-80">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-emerald-500"></div>
+        <div>
+          <div class="font-bold text-sm leading-tight">공공입찰 SaaS · 사전 분석</div>
+          <div class="text-[0.65rem] text-slate-400 font-mono">WISHKET #154913</div>
+        </div>
+      </a>
+      <nav class="ml-auto hidden md:flex items-center gap-1 text-xs text-slate-300">
+        <a href="#insights"  class="px-2.5 py-1 rounded hover:bg-white/5">인사이트</a>
+        <a href="#scenarios" class="px-2.5 py-1 rounded hover:bg-white/5">시나리오</a>
+        <a href="#why-us"    class="px-2.5 py-1 rounded hover:bg-white/5">차별화</a>
+        <a href="#cta"       class="px-2.5 py-1 rounded hover:bg-white/5">자료</a>
+        <a href="../proto/index.html" class="ml-2 px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/30">▶ 라이브 데모</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" class="max-w-5xl mx-auto px-6 pt-20 pb-16">
+    <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs bg-purple-500/10 border border-purple-500/20 text-purple-300 mb-8">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+      </span>
+      위시켓 #154913 · 사전 분석 완료 (EPM 47 + RSM 7 + 프로토타입 8화면)
+    </div>
+
+    <h1 class="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
+      공공 입찰 SaaS —<br/>
+      회원사 일일 모니터링 시간 <span class="grad-text">80% 단축</span><br/>
+      <span class="text-slate-300 text-3xl md:text-5xl">데이터 기반 추천 투찰가로 의사결정 지원</span>
+    </h1>
+
+    <p class="mt-8 text-lg text-slate-400 max-w-2xl leading-relaxed">
+      위시켓 #154913 공고를 받자마자 <strong class="text-slate-200">EPM 47모델 + RSM 7모듈 + 라이브 프로토타입 8화면</strong>을 미리 작성한
+      22년 시니어 풀스택 개발자의 사전 분석 자료입니다.
+    </p>
+
+    <!-- CTA 2개 -->
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="../proto/index.html" class="cta-primary inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 text-emerald-950 font-bold hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/30">
+        ▶ 라이브 프로토타입 체험
+        <span class="text-xs font-mono opacity-70">/proto/</span>
+      </a>
+      <a href="../proto/demo/자동시연.html" class="cta-secondary inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-500/15 border border-purple-500/40 text-purple-200 font-bold hover:bg-purple-500/25 transition">
+        ▶ 1분 30초 자동 시연
+        <span class="text-xs font-mono opacity-70">/demo/</span>
+      </a>
+    </div>
+
+    <!-- KPI 5개 -->
+    <div class="mt-14 grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="kpi"><div class="kpi-num">47</div><div class="kpi-label">EPM 모델</div></div>
+      <div class="kpi"><div class="kpi-num">7</div><div class="kpi-label">RSM 모듈</div></div>
+      <div class="kpi"><div class="kpi-num">15</div><div class="kpi-label">유스케이스</div></div>
+      <div class="kpi"><div class="kpi-num">8</div><div class="kpi-label">프로토타입 화면</div></div>
+      <div class="kpi"><div class="kpi-num">22<span class="text-base text-slate-400">년</span></div><div class="kpi-label">시니어 경력</div></div>
+    </div>
+  </section>
+
+  <!-- ============ INSIGHTS — 미팅 전 알아야 할 3가지 ============ -->
+  <section id="insights" class="max-w-5xl mx-auto px-6 py-20">
+    <div class="mb-10">
+      <div class="text-[0.7rem] font-mono text-purple-300 mb-2 tracking-widest">INSIGHTS · 미팅 전 알아야 할 3가지</div>
+      <h2 class="text-3xl md:text-4xl font-bold">발주자께서 30분 미팅 전에 결정해주시면<br/>가장 효율적인 3가지</h2>
+    </div>
+
+    <div class="space-y-4">
+      <!-- 카드 1 — R0 (가장 큼, rose) -->
+      <details class="card-rose group" open>
+        <summary class="cursor-pointer p-6 flex items-start gap-4 hover:bg-rose-500/5 transition">
+          <div class="text-3xl">🚨</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[0.65rem] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-200">최우선 · R0</span>
+              <span class="text-[0.65rem] text-slate-500">시장 정상 견적과 모순</span>
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold mb-2">60일 / 8백만원 / 풀패키지 — 3자가 동시에 성립 불가능</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              공고 그대로 진행 시 <strong class="text-rose-300">미완성 납품·분쟁 위험</strong>.
+              시장 정상은 <strong class="text-slate-100">4~6개월 / 18~25M</strong>이라 본 공고는 일정 1/3·예산 1/3 수준.
+              미팅 첫 30분에 시나리오 A/B/C 중 어느 것이 진짜인지 합의 필요.
+            </p>
+          </div>
+          <span class="chevron text-rose-400 mt-1">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-0 border-t border-rose-500/20">
+          <div class="overflow-x-auto mt-4">
+            <table class="w-full text-xs md:text-sm">
+              <thead class="text-slate-400 border-b border-slate-700">
+                <tr><th class="text-left py-2">비교 기준</th><th class="text-left py-2">시장 정상</th><th class="text-left py-2 text-rose-300">본 공고</th><th class="text-left py-2">Gap</th></tr>
+              </thead>
+              <tbody class="font-mono">
+                <tr class="border-b border-slate-800"><td class="py-2">풀패키지 SaaS 일정</td><td>4~6개월</td><td class="text-rose-300">2개월 (60일)</td><td>1/2~1/3</td></tr>
+                <tr class="border-b border-slate-800"><td class="py-2">동일 범위 견적</td><td>25~50M</td><td class="text-rose-300">8M</td><td>1/3~1/6</td></tr>
+                <tr><td class="py-2">시니어 풀스택 인건비</td><td>—</td><td class="text-rose-300">22~26인일 분량</td><td>풀패키지 불가</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-5 grid md:grid-cols-3 gap-3 text-xs">
+            <div class="rounded-lg bg-slate-900/50 border border-slate-700/50 p-3"><strong class="text-emerald-300">해석 A</strong><br/><span class="text-slate-400">발주자 일정·예산 입력 오류 (실제는 6개월/30M+)</span></div>
+            <div class="rounded-lg bg-slate-900/50 border border-slate-700/50 p-3"><strong class="text-amber-300">해석 B</strong><br/><span class="text-slate-400">실제로는 부분 작업만 의도 ("풀패키지"는 표현 오류)</span></div>
+            <div class="rounded-lg bg-slate-900/50 border border-slate-700/50 p-3"><strong class="text-rose-300">해석 C</strong><br/><span class="text-slate-400">시장 시세 미인지 — 정상 견적 안 함</span></div>
+          </div>
+          <p class="mt-4 text-xs text-slate-500">→ 각 해석에 대응하는 시나리오 A/B/C를 미팅 사전에 준비. 아래 §시나리오 참조.</p>
+        </div>
+      </details>
+
+      <!-- 카드 2 — V1 (amber) -->
+      <details class="card-amber group">
+        <summary class="cursor-pointer p-6 flex items-start gap-4 hover:bg-amber-500/5 transition">
+          <div class="text-2xl">⚠️</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[0.65rem] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-200">차순위 · V1</span>
+              <span class="text-[0.65rem] text-slate-500">분석 알고리즘 책임 경계</span>
+            </div>
+            <h3 class="text-lg md:text-xl font-bold mb-2">"추천 투찰가"는 자사가 사전 계산? 파트너가 구현?</h3>
+            <p class="text-sm text-slate-400">자사 사전 계산이면 본 견적으로 가능. 파트너 구현이면 일정 ±6~8주, 예산 ±50%.</p>
+          </div>
+          <span class="chevron text-amber-400 mt-1">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-0 border-t border-amber-500/20">
+          <div class="mt-4 grid md:grid-cols-2 gap-3 text-sm">
+            <div class="rounded-lg bg-slate-900/50 p-4 border border-emerald-500/20">
+              <div class="text-emerald-300 font-bold mb-1 text-sm">A. 자사 사전 계산 (가정)</div>
+              <p class="text-xs text-slate-400">자사 데이터팀이 분석 결과를 컬럼/뷰로 제공. 파트너는 read-only 시각화만.</p>
+              <p class="text-xs text-emerald-400 mt-2">✓ 본 견적 그대로 가능</p>
+            </div>
+            <div class="rounded-lg bg-slate-900/50 p-4 border border-rose-500/20">
+              <div class="text-rose-300 font-bold mb-1 text-sm">B. 파트너 구현</div>
+              <p class="text-xs text-slate-400">분위수 회귀(LightGBM) + 임베딩 매칭. ML 인프라 + 학습 데이터 + 검증 필요.</p>
+              <p class="text-xs text-rose-400 mt-2">✗ 별도 SOW (+5~8M, +6~8주)</p>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 카드 3 — V3 (cyan) -->
+      <details class="card-cyan group">
+        <summary class="cursor-pointer p-6 flex items-start gap-4 hover:bg-cyan-500/5 transition">
+          <div class="text-2xl">⚙️</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[0.65rem] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200">사전 준비 · V2+V3</span>
+              <span class="text-[0.65rem] text-slate-500">자사 DB 연동 + PG 가맹</span>
+            </div>
+            <h3 class="text-lg md:text-xl font-bold mb-2">자사 DB 연동 방식 + PG 빌링 가맹 진행 상태</h3>
+            <p class="text-sm text-slate-400">REST API vs DB 직결 결정. PG 빌링은 통상 2~4주 심사 → W1 전 신청 필수.</p>
+          </div>
+          <span class="chevron text-cyan-400 mt-1">▼</span>
+        </summary>
+        <div class="px-6 pb-6 pt-0 border-t border-cyan-500/20">
+          <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <li class="flex gap-2"><span class="text-cyan-400">▸</span> <strong>REST API</strong> (권장) — 결합도 낮음, 향후 자사 시스템 변경에도 우리 코드 영향 최소</li>
+            <li class="flex gap-2"><span class="text-cyan-400">▸</span> DB 직결 — 결합도 높음, 보안 협의 필요</li>
+            <li class="flex gap-2"><span class="text-cyan-400">▸</span> 일배치 덤프 — 실시간성 약함, MVP 시나리오에 적합</li>
+            <li class="flex gap-2"><span class="text-cyan-400">▸</span> <strong>토스페이먼츠 빌링</strong> 가맹은 통상 2~4주. 신규 사업이면 +2주.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ SCENARIOS — A/B/C 비교 ============ -->
+  <section id="scenarios" class="max-w-6xl mx-auto px-6 py-20">
+    <div class="mb-10">
+      <div class="text-[0.7rem] font-mono text-emerald-300 mb-2 tracking-widest">SCENARIOS · 미팅 30분 결정사항</div>
+      <h2 class="text-3xl md:text-4xl font-bold">시나리오 A / B / C —<br/>발주자께서 어느 조건이 진짜이신지 결정</h2>
+    </div>
+
+    <!-- 3-카드 비교표 -->
+    <div class="grid md:grid-cols-3 gap-4">
+      <!-- 시나리오 A -->
+      <article class="scenario-card border-cyan-500/30">
+        <div class="text-[0.65rem] font-mono text-cyan-300 tracking-wider mb-1">시나리오 A</div>
+        <h3 class="text-lg font-bold mb-1">60일 MVP</h3>
+        <p class="text-xs text-slate-400 mb-5">"MVP 우선 → 추후 확장"</p>
+        <dl class="space-y-3 text-sm">
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">범위</dt><dd>가입·결제·검색·상세·기본 어드민 <span class="text-slate-400">5화면</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">일정</dt><dd class="font-mono text-cyan-200">60일 <span class="text-slate-500">(8.5주)</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">예산</dt><dd class="font-mono text-cyan-200">8백만원 <span class="text-slate-500">(공고)</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">제외</dt><dd class="text-xs text-slate-400">자동 갱신·분석·낙찰·스크랩·환불·공지 → 후속</dd></div>
+        </dl>
+      </article>
+
+      <!-- 시나리오 B (권장) -->
+      <article class="scenario-card border-emerald-500/40 ring-1 ring-emerald-500/20 relative">
+        <div class="absolute -top-2 left-4 px-2 py-0.5 rounded-full bg-emerald-500 text-emerald-950 text-[0.6rem] font-bold tracking-wider">RECOMMENDED</div>
+        <div class="text-[0.65rem] font-mono text-emerald-300 tracking-wider mb-1">시나리오 B</div>
+        <h3 class="text-lg font-bold mb-1">풀패키지 정상화</h3>
+        <p class="text-xs text-slate-400 mb-5">"일정·예산 정상화 OK"</p>
+        <dl class="space-y-3 text-sm">
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">범위</dt><dd>UC1~UC12 + 분석 + 글로벌 대시보드 <span class="text-slate-400">풀패키지</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">일정</dt><dd class="font-mono text-emerald-200">22주 + 4주 버퍼 <span class="text-slate-500">(약 6개월)</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">예산</dt><dd class="font-mono text-emerald-200">18~25백만원</dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">검수 포인트</dt><dd class="text-xs text-slate-400">M2(W4 결제) · M4(W10 분석) · M6(W18 베타) · M8(W22 정식)</dd></div>
+        </dl>
+      </article>
+
+      <!-- 시나리오 C -->
+      <article class="scenario-card border-purple-500/30">
+        <div class="text-[0.65rem] font-mono text-purple-300 tracking-wider mb-1">시나리오 C</div>
+        <h3 class="text-lg font-bold mb-1">단계 분할</h3>
+        <p class="text-xs text-slate-400 mb-5">"백엔드부터, 화면은 나중"</p>
+        <dl class="space-y-3 text-sm">
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">1차 범위</dt><dd>자사 DB 연동 + 결제 + 어드민 기본 <span class="text-slate-400">백엔드 중심</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">일정</dt><dd class="font-mono text-purple-200">60일 (1차) <span class="text-slate-500">+ 후속</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">예산</dt><dd class="font-mono text-purple-200">8M (1차) <span class="text-slate-500">+ 후속 별도</span></dd></div>
+          <div><dt class="text-[0.65rem] text-slate-500 uppercase mb-0.5">2~3차</dt><dd class="text-xs text-slate-400">사용자 화면·분석·운영 모듈 → 별도 SOW</dd></div>
+        </dl>
+      </article>
+    </div>
+
+    <!-- 시각 비교 (Chart.js 막대 1개) -->
+    <div class="mt-10 rounded-2xl glass p-6 md:p-8">
+      <div class="flex items-baseline justify-between mb-4">
+        <h3 class="text-sm font-bold text-slate-200">시나리오별 일정·예산 비교</h3>
+        <div class="text-[0.65rem] text-slate-500 font-mono">단위: 주 · 백만원</div>
+      </div>
+      <div class="h-64">
+        <canvas id="scenarioChart"></canvas>
+      </div>
+    </div>
+
+    <!-- No-Go 박스 -->
+    <div class="mt-8 rounded-xl bg-rose-500/10 border border-rose-500/30 p-5 flex gap-4 items-start">
+      <div class="text-2xl">🚫</div>
+      <div>
+        <h4 class="font-bold text-rose-200 mb-1">No-Go 조건</h4>
+        <p class="text-sm text-slate-300">
+          (a) 60일 + (b) 8백만원 + (c) 풀패키지 + (d) 분석 알고리즘 파트너 구현 — <strong class="text-rose-300">4가지 모두 양보 불가</strong>일 경우
+          본 견적으로 진행 불가능. 비드 포기 권고드립니다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY-US — 차별화 5가지 ============ -->
+  <section id="why-us" class="max-w-6xl mx-auto px-6 py-20">
+    <div class="mb-10">
+      <div class="text-[0.7rem] font-mono text-pink-300 mb-2 tracking-widest">WHY-US · 다른 지원자와의 차이</div>
+      <h2 class="text-3xl md:text-4xl font-bold">왜 본 파트너인가 — 5가지</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <!-- 1 -->
+      <div class="why-card md:col-span-2">
+        <div class="why-num">01</div>
+        <h3 class="why-title">사전 분석 규모 — 다른 지원자 대비 100배</h3>
+        <p class="why-desc">EPM 47모델 · RSM 7모듈 · 라이브 프로토타입 8화면 · 포트폴리오·미팅자료까지 미팅 전 모두 작성. 다른 지원자는 1~2페이지 자기소개만 보냅니다.</p>
+        <div class="why-meta">EPM + RSM + Proto + 9개 분석 산출물</div>
+      </div>
+      <!-- 2 -->
+      <div class="why-card">
+        <div class="why-num">02</div>
+        <h3 class="why-title">22년 시니어 + AI 도구</h3>
+        <p class="why-desc">Java/Spring 22년 경력 + AI 코딩 도구 결합으로 1주 단위 동작 데모. 빠르면서도 안정성 손해 없음.</p>
+        <div class="why-meta">1주 데모 사이클</div>
+      </div>
+      <!-- 3 -->
+      <div class="why-card">
+        <div class="why-num">03</div>
+        <h3 class="why-title">결제·구독 안정성</h3>
+        <p class="why-desc">Spring Boot 22년. 멱등성·ShedLock·시간 압축 테스트로 정기 결제 사고 0건 운영.</p>
+        <div class="why-meta">결제 사고 0건</div>
+      </div>
+      <!-- 4 -->
+      <div class="why-card">
+        <div class="why-num">04</div>
+        <h3 class="why-title">AI/LLM 활용 옵션</h3>
+        <p class="why-desc">V1=B 시 RAG·임베딩 매칭으로 자사 분석 모듈 자체 구축 가능 (별도 견적). 22년 백엔드 + AI는 시장에 거의 없는 조합.</p>
+        <div class="why-meta">분위수 회귀 + LightGBM</div>
+      </div>
+      <!-- 5 -->
+      <div class="why-card md:col-span-2">
+        <div class="why-num">05</div>
+        <h3 class="why-title">보안·감사 로그 기본 탑재 — B2B + 결제 표준</h3>
+        <p class="why-desc">산업은행 EKP 전자결재 경험. JWT RS256 + AuditLog + BCrypt cost 12 + Bucket4j Rate Limit + 어드민 IP 화이트리스트가 처음부터 표준 구성에 포함.</p>
+        <div class="why-meta">JWT · AuditLog · BCrypt · Rate Limit</div>
+      </div>
+    </div>
+
+    <p class="mt-8 text-xs text-slate-500 max-w-2xl">
+      ※ 본 분석은 <strong class="text-slate-400">Q1=A (자사 사전 계산)</strong> 가정 기준. V1=B 시나리오는 별도 SOW로 즉시 견적 가능합니다.
+    </p>
+  </section>
+
+  <!-- ============ CTA — 미팅 요청 + 자료 ============ -->
+  <section id="cta" class="max-w-4xl mx-auto px-6 py-20">
+    <div class="rounded-3xl bg-gradient-to-br from-purple-600/20 via-slate-900 to-emerald-600/20 border border-purple-500/30 p-8 md:p-12">
+      <div class="text-[0.7rem] font-mono text-purple-300 mb-3 tracking-widest">CTA · 다음 단계</div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-3">미팅 30분이면<br/>견적·일정 확정 가능합니다.</h2>
+      <p class="text-slate-300 leading-relaxed">
+        시나리오 A/B/C 결정 + V1·V2·V3 변수 확정 + SOW 초안 합의까지 30분 안에 완료.
+      </p>
+
+      <!-- 체크리스트 -->
+      <div class="mt-6 space-y-2 text-sm">
+        <div class="flex gap-2 items-center"><span class="text-emerald-400">✓</span><span>시나리오 A/B/C 중 어느 조건이 진짜인지 결정</span></div>
+        <div class="flex gap-2 items-center"><span class="text-emerald-400">✓</span><span>V1 분석 알고리즘 책임 경계 확정 (자사? 파트너?)</span></div>
+        <div class="flex gap-2 items-center"><span class="text-emerald-400">✓</span><span>자사 DB 연동 방식 + PG 가맹 상태 합의</span></div>
+        <div class="flex gap-2 items-center"><span class="text-emerald-400">✓</span><span>SOW 초안 + 분할 결제 일정</span></div>
+      </div>
+
+      <div class="mt-8 border-t border-white/10 pt-6">
+        <div class="text-[0.65rem] font-mono text-slate-400 tracking-wider mb-3">미팅 전 함께 확인해보실 자료</div>
+        <div class="grid md:grid-cols-2 gap-3 text-sm">
+          <a href="../proto/index.html" class="resource-link bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20">
+            <div class="font-bold text-emerald-200">▶ 라이브 프로토타입</div>
+            <div class="text-[0.65rem] text-slate-400 mt-0.5">8화면 React 콘솔 · 데스크탑</div>
+          </a>
+          <a href="../proto/demo/자동시연.html" class="resource-link bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20">
+            <div class="font-bold text-purple-200">▶ 1분 30초 자동 시연</div>
+            <div class="text-[0.65rem] text-slate-400 mt-0.5">90초 자동 재생 · 모바일 OK</div>
+          </a>
+          <a href="../5_제안서_IT.md" class="resource-link bg-cyan-500/10 border-cyan-500/30 hover:bg-cyan-500/20">
+            <div class="font-bold text-cyan-200">📄 제안서 IT 버전</div>
+            <div class="text-[0.65rem] text-slate-400 mt-0.5">Spring Boot · Hexagonal · ADR</div>
+          </a>
+          <a href="../5_제안서_비IT.md" class="resource-link bg-pink-500/10 border-pink-500/30 hover:bg-pink-500/20">
+            <div class="font-bold text-pink-200">📄 제안서 비IT 버전</div>
+            <div class="text-[0.65rem] text-slate-400 mt-0.5">기술 용어 없음 · 비즈니스 결과</div>
+          </a>
+        </div>
+
+        <p class="mt-6 text-[0.65rem] text-slate-500">
+          ※ 미팅 예약 버튼은 Cal.com URL 주입 후 활성화됩니다. 현재는 위시켓 메시지 기능을 이용해 주세요.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-white/5 mt-12 py-8">
+    <div class="max-w-5xl mx-auto px-6 text-xs text-slate-500 flex flex-wrap justify-between gap-4">
+      <div>
+        © 2026 위시켓 #154913 사전 분석 · 22년 시니어 풀스택 개발자
+      </div>
+      <div class="flex gap-3">
+        <a href="./_archive_v1/it.html" class="hover:text-slate-300">기술 상세 (구 IT 버전)</a>
+        <a href="./_archive_v1/nonit.html" class="hover:text-slate-300">구 비IT 버전</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./client.js"></script>
+</body>
+</html>

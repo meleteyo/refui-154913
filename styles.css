@@ -1,0 +1,293 @@
+/* refui/styles.css — v3 (8섹션 + 인터랙티브 PROTO PREVIEW + 랜딩) ~210행 */
+
+html { scroll-behavior: smooth; }
+body { min-height: 100vh; }
+
+/* ── Aurora 배경 ────────────────────────────────────────────── */
+.aurora-bg { position: fixed; inset: 0; z-index: -10; background: #020617; }
+.aurora-bg::before {
+  content: ''; position: absolute; inset: 0; opacity: 0.35;
+  background:
+    radial-gradient(at 15% 20%, rgba(139,92,246,0.35), transparent 50%),
+    radial-gradient(at 85% 70%, rgba(16,185,129,0.25), transparent 50%),
+    radial-gradient(at 50% 50%, rgba(236,72,153,0.12), transparent 45%);
+}
+
+/* ── Glassmorphism ────────────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.grad-text {
+  background: linear-gradient(to right, #a78bfa, #f472b6, #34d399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── 랜딩 페이지 (index.html) ──────────────────────────────────── */
+.landing-card {
+  display: block;
+  padding: 2rem 1.75rem;
+  border-radius: 1.25rem;
+  background: rgba(15,23,42,0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.landing-card:hover {
+  transform: translateY(-4px);
+  background: rgba(15,23,42,0.85);
+}
+.landing-card-it:hover    { border-color: rgba(34,211,238,0.5);  box-shadow: 0 16px 48px rgba(34,211,238,0.12); }
+.landing-card-nonit:hover { border-color: rgba(244,114,182,0.5); box-shadow: 0 16px 48px rgba(244,114,182,0.12); }
+
+.landing-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.8; }
+.landing-label {
+  display: inline-block; padding: 0.25rem 0.6rem;
+  border-radius: 999px; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.landing-card-it .landing-label    { background: rgba(34,211,238,0.15);  color: #67e8f9; }
+.landing-card-nonit .landing-label { background: rgba(244,114,182,0.15); color: #f9a8d4; }
+
+.landing-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.75rem; color: #f1f5f9; }
+.landing-desc  { font-size: 0.875rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1.25rem; }
+.landing-features { list-style: none; padding: 0; margin: 0 0 1.5rem; font-size: 0.8rem; color: #94a3b8; }
+.landing-features li { padding: 0.25rem 0; }
+.landing-cta {
+  font-size: 0.8rem; font-weight: 600;
+  color: #f1f5f9;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  transition: color 0.15s;
+}
+.landing-card:hover .landing-cta { color: #fff; }
+
+/* ── KPI 카드 (HERO) ───────────────────────────────────────── */
+.kpi {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 0.75rem;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  transition: background 0.2s;
+}
+.kpi:hover { background: rgba(255,255,255,0.05); }
+.kpi-num { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 700; color: #f1f5f9; line-height: 1.1; }
+.kpi-label { font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem; }
+
+/* ── PROTO PREVIEW 3 컴포넌트 ───────────────────────────────── */
+.preview-card {
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+.preview-badge {
+  display: inline-block; padding: 0.2rem 0.55rem;
+  border-radius: 999px; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.preview-card h3 { font-size: 1.05rem; font-weight: 700; color: #f1f5f9; margin: 0.5rem 0 1rem; }
+
+/* 컴포넌트 1 — 분석 */
+.recommend-amount .value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; color: #6ee7b7; }
+.confidence-gauge .value { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #6ee7b7; }
+
+/* 컴포넌트 2 — 환불 정책 토글 */
+.policy-toggle { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.policy-toggle button {
+  flex: 1; padding: 0.6rem; border-radius: 0.5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #94a3b8; font-size: 0.8rem; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+}
+.policy-toggle button:hover { background: rgba(255,255,255,0.08); }
+.policy-toggle button.active {
+  background: rgba(168,85,247,0.15);
+  border-color: rgba(168,85,247,0.5);
+  color: #c4b5fd;
+}
+.policy-result {
+  padding: 1rem; border-radius: 0.5rem; transition: all 0.2s;
+  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25);
+}
+.policy-result[data-state="broadcast"] {
+  background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.25);
+}
+.policy-result .result-amount { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700; color: #f1f5f9; }
+.policy-result .ratio { font-size: 0.75rem; color: #94a3b8; }
+.policy-result .result-note { font-size: 0.8rem; color: #cbd5e1; margin: 0.4rem 0; line-height: 1.5; }
+.policy-result .result-citation { font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; color: #6ee7b7; }
+.policy-result[data-state="broadcast"] .result-citation { color: #fcd34d; }
+
+/* 컴포넌트 3 — 8화면 사이드바 */
+.sidebar-layout { display: grid; grid-template-columns: 180px 1fr; gap: 1rem; }
+.mini-sidebar { background: #020617; border-radius: 0.5rem; padding: 0.5rem; }
+.mini-sidebar .section-label {
+  font-size: 0.55rem; font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em; padding: 0.5rem 0.5rem 0.25rem;
+}
+.mini-sidebar button {
+  display: block; width: 100%; text-align: left;
+  padding: 0.4rem 0.5rem; border: 0; background: transparent;
+  font-size: 0.75rem; color: #94a3b8; border-radius: 0.25rem;
+  cursor: pointer; transition: all 0.15s;
+}
+.mini-sidebar button:hover { background: rgba(255,255,255,0.04); color: #f1f5f9; }
+.mini-sidebar button.active { background: rgba(255,255,255,0.08); color: #f1f5f9; font-weight: 500; }
+.mini-preview { background: rgba(2,6,23,0.5); border-radius: 0.5rem; padding: 1rem; min-height: 200px; }
+.mini-preview h4 { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin: 0 0 0.75rem; }
+.mini-preview .preview-mock-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.75rem;
+}
+.mini-preview .preview-mock-card {
+  height: 60px; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 0.25rem;
+}
+@media (max-width: 768px) {
+  .sidebar-layout { grid-template-columns: 1fr; }
+}
+
+/* ── INSIGHTS 카드 (Section R0) ─────────────────────────────── */
+.card-rose, .card-amber, .card-cyan {
+  border-radius: 1rem;
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+.card-rose  { border: 1px solid rgba(244,63,94,0.35);  border-left-width: 4px; }
+.card-amber { border: 1px solid rgba(245,158,11,0.35); border-left-width: 4px; }
+.card-cyan  { border: 1px solid rgba(34,211,238,0.35); border-left-width: 4px; }
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+.chevron { transition: transform 0.2s; display: inline-block; }
+details[open] > summary .chevron { transform: rotate(180deg); }
+
+/* ── SCENARIOS 카드 ─────────────────────────────────────────── */
+.scenario-card {
+  border-radius: 1rem;
+  background: rgba(15,23,42,0.5);
+  backdrop-filter: blur(12px);
+  border-width: 1px; border-style: solid;
+  padding: 1.5rem;
+  transition: transform 0.2s;
+}
+.scenario-card:hover { transform: translateY(-2px); }
+
+/* ── PARTNER 포트폴리오 카드 ────────────────────────────────── */
+.portfolio-card {
+  background: rgba(15,23,42,0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+.portfolio-card:hover { border-color: rgba(168,85,247,0.3); }
+.portfolio-card .req-tag {
+  display: inline-block; padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+  background: rgba(168,85,247,0.12); color: #c4b5fd;
+  font-size: 0.65rem; font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 0.5rem;
+}
+.portfolio-card h4 { font-size: 0.95rem; font-weight: 700; color: #f1f5f9; margin: 0.25rem 0 0.5rem; }
+.portfolio-card p  { font-size: 0.75rem; color: #94a3b8; line-height: 1.5; }
+.portfolio-card .verify-badge {
+  display: inline-block; margin-top: 0.75rem; padding: 0.2rem 0.5rem;
+  background: rgba(16,185,129,0.12); color: #6ee7b7;
+  font-size: 0.65rem; font-family: 'JetBrains Mono', monospace;
+  border-radius: 0.25rem;
+}
+
+/* ── TIMELINE ───────────────────────────────────────────────── */
+.timeline-row {
+  display: grid; grid-template-columns: 80px 1fr; gap: 1rem;
+  padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.timeline-week { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #94a3b8; }
+.timeline-bar {
+  height: 28px; border-radius: 0.4rem;
+  display: flex; align-items: center; padding: 0 0.75rem;
+  font-size: 0.7rem; font-weight: 500; color: #f1f5f9;
+}
+.timeline-bar.phase1 { background: linear-gradient(90deg, rgba(34,211,238,0.25), rgba(34,211,238,0.1)); border: 1px solid rgba(34,211,238,0.3); }
+.timeline-bar.phase2 { background: linear-gradient(90deg, rgba(168,85,247,0.25), rgba(168,85,247,0.1)); border: 1px solid rgba(168,85,247,0.3); }
+.timeline-bar.phase3 { background: linear-gradient(90deg, rgba(244,114,182,0.25), rgba(244,114,182,0.1)); border: 1px solid rgba(244,114,182,0.3); }
+.timeline-bar.phase4 { background: linear-gradient(90deg, rgba(16,185,129,0.25), rgba(16,185,129,0.1)); border: 1px solid rgba(16,185,129,0.3); }
+.milestone-card {
+  background: rgba(15,23,42,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+  text-align: center;
+}
+.milestone-card .m-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #c4b5fd; }
+.milestone-card .m-name { font-size: 0.8rem; font-weight: 600; color: #f1f5f9; margin-top: 0.2rem; }
+.milestone-card .m-week { font-size: 0.65rem; color: #94a3b8; margin-top: 0.2rem; }
+
+/* ── WHY-US + 비교표 ─────────────────────────────────────────── */
+.why-card {
+  background: rgba(15,23,42,0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  padding: 1.25rem; position: relative;
+}
+.why-num {
+  position: absolute; top: 0.875rem; right: 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  color: rgba(244,114,182,0.5); letter-spacing: 0.1em;
+}
+.why-title { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.4rem; }
+.why-desc  { font-size: 0.8rem; color: #cbd5e1; line-height: 1.55; }
+
+.compare-table { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+.compare-table th, .compare-table td { padding: 0.6rem 0.75rem; text-align: left; }
+.compare-table th { color: #94a3b8; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.compare-table td { border-bottom: 1px solid rgba(255,255,255,0.04); color: #cbd5e1; }
+.compare-table .col-us { color: #6ee7b7; font-weight: 600; }
+
+/* ── CTA 자료 링크 ─────────────────────────────────────────── */
+.resource-link {
+  display: block; padding: 0.875rem 1rem;
+  border-radius: 0.75rem; border-width: 1px; border-style: solid;
+  transition: all 0.15s;
+}
+
+/* ── FAQ details ─────────────────────────────────────────── */
+.faq-item {
+  background: rgba(15,23,42,0.4);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.faq-item summary {
+  cursor: pointer; padding: 0.875rem 1rem;
+  font-size: 0.875rem; font-weight: 500; color: #f1f5f9;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.faq-item summary:hover { color: #fff; }
+.faq-item[open] summary { border-bottom: 1px solid rgba(255,255,255,0.06); }
+.faq-item .faq-body {
+  padding: 0.875rem 1rem;
+  font-size: 0.85rem; color: #cbd5e1; line-height: 1.65;
+}
+
+/* ── 모바일 반응형 ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .kpi-num { font-size: 1.5rem; }
+  h1 { font-size: 2rem !important; }
+  h1 span { font-size: 1.5rem !important; }
+  .timeline-row { grid-template-columns: 60px 1fr; }
+}

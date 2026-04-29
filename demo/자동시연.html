@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공공입찰 SaaS · 1분 30초 자동 시연</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: #000; color: #f1f5f9;
+      font-family: 'Pretendard Variable', system-ui, sans-serif;
+      overflow: hidden;
+    }
+    .stage { position: fixed; inset: 0; display: flex; flex-direction: column; }
+    .frame-wrap { flex: 1; position: relative; overflow: hidden; background: #020617; }
+    iframe {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1440px; height: 900px;
+      border: 0;
+    }
+
+    .caption {
+      position: absolute; left: 50%; bottom: 80px;
+      transform: translateX(-50%);
+      max-width: 720px; padding: 18px 28px;
+      background: rgba(2, 6, 23, 0.92);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 12px 60px rgba(168, 85, 247, 0.25);
+      backdrop-filter: blur(8px);
+      opacity: 0; transition: opacity 0.5s ease;
+      z-index: 10;
+    }
+    .caption.show { opacity: 1; }
+    .caption .step-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.1em;
+      color: #c4b5fd; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .caption .step-text { font-size: 18px; line-height: 1.55; color: #f1f5f9; font-weight: 500; }
+
+    .topbar { display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: #0f172a; border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 20; }
+    .topbar h1 { margin: 0; font-size: 14px; font-weight: 600; color: #f1f5f9; }
+    .topbar .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #64748b; }
+
+    .progress-track { flex: 1; max-width: 400px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #a855f7, #ec4899); width: 0%; transition: width 0.3s ease; }
+    .timecode { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8; min-width: 80px; text-align: right; }
+
+    .controls { display: flex; gap: 8px; }
+    .btn { padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #f1f5f9; font-size: 12px; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .btn:hover { background: rgba(168,85,247,0.2); border-color: rgba(168,85,247,0.4); }
+    .btn.primary { background: linear-gradient(135deg, #a855f7, #ec4899); border: none; font-weight: 600; }
+
+    .fake-cursor { position: absolute; width: 32px; height: 32px; pointer-events: none; z-index: 30; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8)); opacity: 0; }
+    .fake-cursor.show { opacity: 1; }
+    .click-pulse { position: absolute; pointer-events: none; z-index: 29; width: 56px; height: 56px; border: 3px solid #a855f7; border-radius: 50%; transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+    .click-pulse.fire { animation: pulse 0.6s ease-out; }
+    @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
+
+    .rec-hint { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); padding: 10px 18px; border-radius: 999px; background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.4); color: #fca5a5; font-size: 12px; font-family: 'JetBrains Mono', monospace; display: none; align-items: center; gap: 8px; z-index: 15; }
+    .rec-hint.show { display: flex; }
+    .rec-hint::before { content: ''; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.3; } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="topbar">
+      <h1>공공입찰 SaaS · 자동 시연</h1>
+      <span class="meta">위시켓 #154913</span>
+      <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+      <span class="timecode" id="timecode">0:00 / 1분 30초</span>
+      <div class="controls">
+        <button class="btn" id="btn-restart">↻ 처음부터</button>
+        <button class="btn primary" id="btn-play">▶ 재생</button>
+      </div>
+    </div>
+
+    <div class="frame-wrap">
+      <div class="rec-hint" id="rec-hint">REC · ⌘⇧5로 화면 녹화 시작 후 ▶ 재생을 눌러주세요</div>
+      <iframe id="proto" src="../proto/index.html"></iframe>
+
+      <svg class="fake-cursor" id="cursor" viewBox="0 0 24 24">
+        <path d="M3 3 L3 19 L8 14 L11 21 L14 20 L11 13 L18 13 Z" fill="#fff" stroke="#000" stroke-width="1" stroke-linejoin="round"/>
+      </svg>
+      <div class="click-pulse" id="pulse"></div>
+
+      <div class="caption" id="caption">
+        <div class="step-label" id="caption-label">STEP 0</div>
+        <div class="step-text" id="caption-text">로딩 중…</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_MS = 90000;
+
+    const iframe = document.getElementById('proto');
+    const captionEl = document.getElementById('caption');
+    const captionLabel = document.getElementById('caption-label');
+    const captionText = document.getElementById('caption-text');
+    const cursor = document.getElementById('cursor');
+    const pulse = document.getElementById('pulse');
+    const progress = document.getElementById('progress');
+    const timecode = document.getElementById('timecode');
+    const recHint = document.getElementById('rec-hint');
+
+    let playing = false;
+    let startTime = 0;
+    let rafId = null;
+
+    const fmt = (ms) => { const s = Math.floor(ms / 1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
+    const setCaption = (label, text) => { captionLabel.textContent = label; captionText.textContent = text; captionEl.classList.add('show'); };
+    const hideCaption = () => captionEl.classList.remove('show');
+    const navIframe = (name) => { try { const win = iframe.contentWindow; if (win && win.__navigate) win.__navigate(name); } catch (e) { console.warn('nav failed', e); } };
+    const moveCursor = (x, y) => { cursor.style.left = (x - 16) + 'px'; cursor.style.top = (y - 16) + 'px'; cursor.classList.add('show'); };
+    const clickAt = (x, y) => { pulse.style.left = x + 'px'; pulse.style.top = y + 'px'; pulse.classList.remove('fire'); void pulse.offsetWidth; pulse.classList.add('fire'); };
+    const hideCursor = () => cursor.classList.remove('show');
+
+    // ===== Timeline 12 step (90초) =====
+    // 도메인: 회원사 4화면 (search/analytics/tenderDetail/scraps) + 운영자 4화면 (dashboard/console/history/settings)
+    const timeline = [
+      {
+        at: 500,
+        label: 'INTRO',
+        text: '위시켓 #154913 공공입찰 SaaS — 회원사 4화면 + 운영자 4화면, 8화면 라이브 콘솔.'
+      },
+      {
+        at: 6000,
+        label: '01 · 회원사: 다중 조건 검색',
+        text: '회원사 첫 화면. 지역·업종·금액·키워드로 입찰 공고를 빠르게 발견.'
+      },
+      {
+        at: 13000,
+        label: '02 · 카드 → 분석으로 이동',
+        text: '관심 공고 카드의 [분석] 버튼 클릭 → 추천 투찰가 화면으로 이동.',
+        action: () => { moveCursor(680, 520); clickAt(680, 520); setTimeout(() => navIframe('analytics'), 400); }
+      },
+      {
+        at: 21000,
+        label: '03 · 추천 투찰가 ★ 차별화',
+        text: '본 SaaS의 핵심 가치 — 자사 분석 데이터를 ₩213M ~ ₩232M 범위로 시각화. 신뢰도 82%.'
+      },
+      {
+        at: 30000,
+        label: '04 · Recharts 5종',
+        text: '12개월 트렌드 · 낙찰률 분포 도넛 · 업종 평균 vs 본 공고 비교 등 5종 차트.'
+      },
+      {
+        at: 38000,
+        label: '05 · 공고 상세 + 첨부파일',
+        text: '공고 정보 / 분석 요약 / 낙찰 결과 3-탭 + 첨부파일 PAID 권한 분리.',
+        action: () => { navIframe('tenderDetail'); }
+      },
+      {
+        at: 45000,
+        label: '06 · 스크랩 + 참여예정 칸반',
+        text: '관심 공고 스크랩 + REVIEWING → CONFIRMED → SUBMITTED → WON·LOST 5컬럼.',
+        action: () => { navIframe('scraps'); }
+      },
+      {
+        at: 52000,
+        label: '07 · 운영자 대시보드',
+        text: '운영자 콘솔 — MRR ₩10.9M, 유료 회원사 34, 이상 결제 3건 KPI 모니터링.',
+        action: () => { navIframe('dashboard'); }
+      },
+      {
+        at: 60000,
+        label: '08 · 환불 위저드 4스텝',
+        text: '결제 환불 위저드 시작 — 회원사·기간 필터로 환불 대상 결제 조회.',
+        action: () => { navIframe('console'); }
+      },
+      {
+        at: 68000,
+        label: '09 · policyMode 토글 ★',
+        text: 'Tweaks PRIORITY (즉시 전액) vs BROADCAST (일할 환불) — Step 3 약관·금액이 실시간 변화.'
+      },
+      {
+        at: 76000,
+        label: '10 · 결제 이력 + 감사 로그',
+        text: '결제 이력 + 감사 로그 + 자동 재시도 (PAY-3982 FAILED → PAY-3985 SUCCESS).',
+        action: () => { navIframe('history'); }
+      },
+      {
+        at: 84000,
+        label: 'END',
+        text: '사전 분석 EPM 47 + RSM 7 + 라이브 프로토타입 8화면 — 미팅 30분에 시나리오 A/B/C 합의.'
+      },
+    ];
+
+    let timeline_fired = new Set();
+
+    function tick() {
+      if (!playing) return;
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, (elapsed / TOTAL_MS) * 100);
+      progress.style.width = pct + '%';
+      timecode.textContent = `${fmt(elapsed)} / 1분 30초`;
+
+      for (const step of timeline) {
+        if (elapsed >= step.at && !timeline_fired.has(step.at)) {
+          timeline_fired.add(step.at);
+          if (step.action) try { step.action(); } catch (e) {}
+          setCaption(step.label, step.text);
+        }
+      }
+
+      if (elapsed >= TOTAL_MS) {
+        playing = false;
+        document.getElementById('btn-play').textContent = '▶ 재생';
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function play() {
+      if (playing) {
+        playing = false;
+        cancelAnimationFrame(rafId);
+        document.getElementById('btn-play').textContent = '▶ 재생';
+        recHint.classList.remove('show');
+        return;
+      }
+      timeline_fired.clear();
+      navIframe('search');
+      progress.style.width = '0%';
+      hideCaption();
+      setTimeout(() => {
+        playing = true;
+        startTime = Date.now();
+        document.getElementById('btn-play').textContent = '⏸ 일시정지';
+        recHint.classList.add('show');
+        setTimeout(() => recHint.classList.remove('show'), 4000);
+        tick();
+      }, 300);
+    }
+
+    function restart() {
+      playing = false;
+      cancelAnimationFrame(rafId);
+      timeline_fired.clear();
+      navIframe('search');
+      progress.style.width = '0%';
+      timecode.textContent = '0:00 / 1분 30초';
+      hideCaption();
+      hideCursor();
+      document.getElementById('btn-play').textContent = '▶ 재생';
+    }
+
+    document.getElementById('btn-play').addEventListener('click', play);
+    document.getElementById('btn-restart').addEventListener('click', restart);
+
+    iframe.addEventListener('load', () => {
+      setTimeout(() => {
+        setCaption('READY', '▶ 재생 버튼을 눌러 자동 시연을 시작하세요. ⌘⇧5로 화면 녹화 가능.');
+      }, 800);
+    });
+  </script>
+</body>
+</html>

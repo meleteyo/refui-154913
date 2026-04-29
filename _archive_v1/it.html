@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공공 입찰 정보 구독 SaaS — IT 레퍼런스 UI</title>
+  <meta name="description" content="위시켓 #154913 · Spring Boot 3.x + Hexagonal + Bounded Context 5개 기반 B2B 정기결제 SaaS · ADR 6건 + 리스크 15건 + 22주 일정" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Pretendard Variable"', 'Pretendard', 'system-ui', 'sans-serif'], mono: ['"JetBrains Mono"', 'SF Mono', 'Menlo', 'monospace'] } } } };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-java.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-typescript.min.js"></script>
+
+  <link rel="stylesheet" href="./styles.css" />
+
+  <style>
+    :root { --project-id: 154913; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+      background: #020617;
+      color: #f1f5f9;
+      -webkit-font-smoothing: antialiased;
+    }
+    .aurora-bg { position: fixed; inset: 0; z-index: -10; background: #020617; }
+    .aurora-bg::before {
+      content: ''; position: absolute; inset: 0; opacity: 0.4;
+      background:
+        radial-gradient(at 15% 25%, rgba(139,92,246,0.35), transparent 50%),
+        radial-gradient(at 85% 75%, rgba(16,185,129,0.25), transparent 50%),
+        radial-gradient(at 50% 50%, rgba(236,72,153,0.15), transparent 45%),
+        radial-gradient(at 10% 90%, rgba(34,211,238,0.12), transparent 40%);
+    }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
+    .grad-text { background: linear-gradient(to right, #a78bfa, #f472b6, #34d399); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .ascii { font-family: 'JetBrains Mono', monospace; white-space: pre; line-height: 1.45; font-size: 0.78rem; color: #cbd5e1; }
+    .countup { font-variant-numeric: tabular-nums; }
+    .tab-btn[aria-selected="true"] { background: rgba(139,92,246,0.15); color: #c4b5fd; border-color: rgba(139,92,246,0.4); }
+    .pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; }
+    .risk-cell { transition: transform 0.2s; cursor: pointer; }
+    .risk-cell:hover { transform: scale(1.05); }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] > summary .chevron { transform: rotate(90deg); }
+    .chevron { transition: transform 0.2s; }
+  </style>
+</head>
+
+<body data-client-type="it">
+  <div class="aurora-bg" aria-hidden="true"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
+      <a href="./index.html" class="flex items-center gap-3 hover:opacity-80">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 via-pink-500 to-emerald-500 shadow-lg shadow-purple-500/30"></div>
+        <div>
+          <div class="font-bold text-sm leading-tight">공공 입찰 정보 구독 SaaS</div>
+          <div class="text-[0.65rem] text-slate-400 flex items-center gap-1.5">
+            <span>WISHKET</span>
+            <span class="font-mono text-purple-400">#154913</span>
+            <span class="text-slate-600">·</span>
+            <span>IT 버전</span>
+          </div>
+        </div>
+      </a>
+      <nav class="ml-auto hidden lg:flex items-center gap-1 text-xs text-slate-300">
+        <a href="#core" class="px-2.5 py-1 rounded hover:bg-white/5">개요</a>
+        <a href="#insights" class="px-2.5 py-1 rounded hover:bg-white/5">인사이트</a>
+        <a href="#questions" class="px-2.5 py-1 rounded hover:bg-white/5">Q&A</a>
+        <a href="#risks" class="px-2.5 py-1 rounded hover:bg-white/5">리스크</a>
+        <a href="#architecture" class="px-2.5 py-1 rounded hover:bg-white/5">아키텍처</a>
+        <a href="#timeline" class="px-2.5 py-1 rounded hover:bg-white/5">일정</a>
+        <a href="#why-us" class="px-2.5 py-1 rounded hover:bg-white/5">차별화</a>
+        <a href="#cta" class="ml-2 px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-200 hover:bg-purple-500/30">미팅 요청</a>
+      </nav>
+      <div class="ml-auto lg:hidden">
+        <a href="./nonit.html" class="px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/40 text-xs text-purple-200">비IT 버전 →</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="max-w-7xl mx-auto px-6 pt-16 pb-12">
+    <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 mb-6">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+      </span>
+      Spring Boot 3.x · Hexagonal · Bounded Context 5
+    </div>
+    <h1 class="text-4xl md:text-6xl font-bold leading-tight tracking-tight max-w-4xl">
+      공공 입찰 정보를<br/>
+      <span class="grad-text">데이터 인사이트로 차별화하는 B2B 구독 SaaS</span>
+    </h1>
+    <p class="mt-6 text-lg text-slate-300 max-w-2xl leading-relaxed">
+      위시켓 공고 #154913 분석 결과를 모델링·아키텍처·일정·리스크까지 한 페이지에 정리했습니다.
+      EPM 5단계 + RSM 6단계 + Hexagonal 아키텍처 기반.
+    </p>
+
+    <!-- Top 3 Insights -->
+    <div class="mt-10 grid md:grid-cols-3 gap-4">
+      <div class="glass rounded-xl p-5 border-l-4 border-rose-500">
+        <div class="text-[0.65rem] font-mono text-rose-300 mb-2">INSIGHT 01 · 최우선</div>
+        <div class="text-sm font-semibold mb-2">분석 알고리즘(D8) 책임 경계</div>
+        <p class="text-xs text-slate-400 leading-relaxed">"추천 입찰 금액"이 자사 사전 계산(view) vs 파트너 구현(ETL+모델링)인지가 일정 ±6~8주, 예산 ±50%를 결정.</p>
+      </div>
+      <div class="glass rounded-xl p-5 border-l-4 border-amber-500">
+        <div class="text-[0.65rem] font-mono text-amber-300 mb-2">INSIGHT 02 · 차순위</div>
+        <div class="text-sm font-semibold mb-2">자사 DB 연동 인터페이스</div>
+        <p class="text-xs text-slate-400 leading-relaxed">REST API · DB 직결 · 일배치 덤프 · CDC 중 어느 방식인지 → 결합도와 어댑터 구현 분기.</p>
+      </div>
+      <div class="glass rounded-xl p-5 border-l-4 border-emerald-500">
+        <div class="text-[0.65rem] font-mono text-emerald-300 mb-2">INSIGHT 03 · 사전 준비</div>
+        <div class="text-sm font-semibold mb-2">PG 가맹·사업자등록 상태</div>
+        <p class="text-xs text-slate-400 leading-relaxed">토스 빌링 가맹은 통상 2~4주 심사. 신규 사업이면 +2주. 미진행 시 W17 베타 오픈 영향.</p>
+      </div>
+    </div>
+
+    <!-- Meta KPIs -->
+    <div class="mt-10 grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
+      <div class="glass rounded-lg p-3"><div class="countup text-2xl font-bold text-purple-300">8</div><div class="text-[0.65rem] text-slate-400">분석 산출물</div></div>
+      <div class="glass rounded-lg p-3"><div class="countup text-2xl font-bold text-pink-300">11</div><div class="text-[0.65rem] text-slate-400">EPM/RSM 모델</div></div>
+      <div class="glass rounded-lg p-3"><div class="countup text-2xl font-bold text-emerald-300">23</div><div class="text-[0.65rem] text-slate-400">API 엔드포인트</div></div>
+      <div class="glass rounded-lg p-3"><div class="countup text-2xl font-bold text-cyan-300">22</div><div class="text-[0.65rem] text-slate-400">주차별 일정</div></div>
+      <div class="glass rounded-lg p-3"><div class="countup text-2xl font-bold text-amber-300">15</div><div class="text-[0.65rem] text-slate-400">리스크 식별</div></div>
+    </div>
+  </section>
+
+  <!-- ============ CORE ============ -->
+  <section id="core" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">CORE</h2>
+      <span class="text-xs font-mono text-slate-500">시스템 목표 · EPM Stage 0</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6 max-w-2xl">B2B 회원사가 공공 입찰 시장의 정보·낙찰결과·분석 인사이트를 한 곳에서 모니터링·분석·결정.</p>
+
+    <div class="glass rounded-2xl p-6 md:p-8">
+      <div class="ascii overflow-x-auto">
+[방문자] ─signUp─▶ Identity Context
+   ├─ BizRegVerifier (국세청 API) ─▶ 사업자번호 진위
+   ├─ User.activated=false → EmailSender(SES)
+   └─ verifyClick → User.activated=true → Login
+
+[FREE 사용자] ─planSelect─▶ Subscription Context
+   ├─ TossPayments (빌링키 발급 + 1회차 승인)
+   ├─ Webhook → Subscription.ACTIVE → User.upgrade(PAID)
+   └─ Email 영수증
+
+[PAID 사용자] ─search(query)─▶ TenderView Context (read-only)
+   ├─ TenderProvider (자사 API)        ◀── Redis 60s 캐시
+   ├─ AwardProvider (낙찰 결과)        ◀── Redis 300s
+   └─ AnalyticsProvider (D8: 추천금액)  ◀── Redis 300s
+        └─ CompletableFuture 병렬 호출 → P95 < 1초
+
+[Cron] ─tick()─▶ BillingScheduler (ShedLock)
+   for sub in active where next_billing_at ≤ now:
+      Payment.charge(sub.billing_key) → 멱등성 (pg_tx_id)
+      [실패 3회] → Subscription.EXPIRED + User.downgrade(FREE)
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PORTFOLIO — Bento Dashboard ============ -->
+  <section id="portfolio" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">PORTFOLIO</h2>
+      <span class="text-xs font-mono text-slate-500">Bento 대시보드 · KPI 시각화</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">RSM Object 14개 · DB 11개 테이블 · API 23개 · 화면 27개를 단일 페이지에 정리.</p>
+
+    <div class="grid grid-cols-12 gap-4">
+      <!-- KPI 1 -->
+      <div class="col-span-12 md:col-span-4 glass rounded-2xl p-5 row-span-2">
+        <div class="text-[0.7rem] font-mono text-emerald-300 mb-2">검색 성능 목표</div>
+        <div class="countup text-5xl font-bold mb-1">0.8<span class="text-2xl text-slate-400">s</span></div>
+        <div class="text-xs text-slate-400 mb-4">P95 (50만 건 데이터 기준)</div>
+        <canvas id="kpi-search" height="100"></canvas>
+      </div>
+      <!-- KPI 2 -->
+      <div class="col-span-6 md:col-span-4 glass rounded-2xl p-5">
+        <div class="text-[0.7rem] font-mono text-purple-300 mb-1">결제 사고</div>
+        <div class="countup text-3xl font-bold">0<span class="text-base text-slate-400"> 건</span></div>
+        <div class="text-[0.65rem] text-slate-500 mt-1">멱등성 + ShedLock</div>
+      </div>
+      <!-- KPI 3 -->
+      <div class="col-span-6 md:col-span-4 glass rounded-2xl p-5">
+        <div class="text-[0.7rem] font-mono text-cyan-300 mb-1">테스트 커버리지</div>
+        <div class="countup text-3xl font-bold">78<span class="text-base text-slate-400">%</span></div>
+        <div class="text-[0.65rem] text-slate-500 mt-1">JUnit + Testcontainers + Playwright</div>
+      </div>
+      <!-- KPI 4 -->
+      <div class="col-span-6 md:col-span-4 glass rounded-2xl p-5">
+        <div class="text-[0.7rem] font-mono text-pink-300 mb-1">Bounded Context</div>
+        <div class="countup text-3xl font-bold">5<span class="text-base text-slate-400"> 개</span></div>
+        <div class="text-[0.65rem] text-slate-500 mt-1">identity · subscription · tenderview · tracking · admin</div>
+      </div>
+      <!-- KPI 5 -->
+      <div class="col-span-6 md:col-span-4 glass rounded-2xl p-5">
+        <div class="text-[0.7rem] font-mono text-amber-300 mb-1">Adapter 분리</div>
+        <div class="countup text-3xl font-bold">6<span class="text-base text-slate-400"> 종</span></div>
+        <div class="text-[0.65rem] text-slate-500 mt-1">TenderProvider · PG · BizReg · SES · Cache · Search</div>
+      </div>
+      <!-- 차트 도넛: 일정 -->
+      <div class="col-span-12 md:col-span-6 glass rounded-2xl p-5">
+        <div class="text-[0.7rem] font-mono text-slate-400 mb-3">PHASE 분포</div>
+        <canvas id="chart-phase" height="160"></canvas>
+      </div>
+      <!-- 차트 라인: ROI -->
+      <div class="col-span-12 md:col-span-6 glass rounded-2xl p-5">
+        <div class="text-[0.7rem] font-mono text-slate-400 mb-3">회원사 일일 시간 (현행 vs 도입 후, 분 단위)</div>
+        <canvas id="chart-roi" height="160"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ENGINE ============ -->
+  <section id="engine" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">ENGINE</h2>
+      <span class="text-xs font-mono text-slate-500">검색 + 분석 엔진</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">PostgreSQL FTS + GIN + pg_trgm 인덱스로 다중 조건 검색. Redis 60s 캐시. 임계 초과 시 OpenSearch 전환 가능한 SearchProvider 인터페이스.</p>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="glass rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="search" class="w-4 h-4 text-emerald-300"></i>
+          <span class="text-xs font-mono text-emerald-300">Multi-Filter Search</span>
+        </div>
+        <div class="text-sm font-semibold mb-2">8개 검색 차원</div>
+        <ul class="text-xs text-slate-400 space-y-1">
+          <li>· 지역 (시/도, B-tree)</li>
+          <li>· 업종 (분류 코드, B-tree)</li>
+          <li>· 금액 (range index)</li>
+          <li>· 키워드 (GIN/FTS)</li>
+          <li>· 발주처 / 마감일 / 상태 / 입찰방식</li>
+        </ul>
+      </div>
+      <div class="glass rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-purple-300"></i>
+          <span class="text-xs font-mono text-purple-300">Analytics Dashboard</span>
+        </div>
+        <div class="text-sm font-semibold mb-2">차트 5종 (Recharts)</div>
+        <ul class="text-xs text-slate-400 space-y-1">
+          <li>· 추천 입찰가 막대 (min/max + confidence)</li>
+          <li>· 유사 공고 트렌드 line</li>
+          <li>· 낙찰 결과 비교 (자사 vs 낙찰사)</li>
+          <li>· 업종별 평균 분포</li>
+          <li>· 시장 트렌드 area</li>
+        </ul>
+      </div>
+      <div class="glass rounded-xl p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i>
+          <span class="text-xs font-mono text-amber-300">Cache + Concurrency</span>
+        </div>
+        <div class="text-sm font-semibold mb-2">병렬 + 캐시 전략</div>
+        <ul class="text-xs text-slate-400 space-y-1">
+          <li>· CompletableFuture 병렬 (3 Provider)</li>
+          <li>· Redis 검색 60s · 분석 300s</li>
+          <li>· Bucket4j Rate Limit</li>
+          <li>· Spring Virtual Threads (Java 21)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OPERATOR ============ -->
+  <section id="operator" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">OPERATOR</h2>
+      <span class="text-xs font-mono text-slate-500">관리자 백오피스 · A1~A7</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">회원·결제·구독·환불·공지·감사로그를 단일 어드민에서 처리. 모든 ADMIN 액션은 AuditLog 자동 기록.</p>
+    <div class="grid md:grid-cols-4 gap-3">
+      <div class="glass rounded-xl p-4"><div class="text-xs text-slate-500 font-mono mb-1">A2</div><div class="text-sm font-semibold">대시보드</div><div class="text-[0.7rem] text-slate-400 mt-1">가입·결제·이슈 요약</div></div>
+      <div class="glass rounded-xl p-4"><div class="text-xs text-slate-500 font-mono mb-1">A3</div><div class="text-sm font-semibold">회원 관리</div><div class="text-[0.7rem] text-slate-400 mt-1">검색·등급변경·강제탈퇴</div></div>
+      <div class="glass rounded-xl p-4"><div class="text-xs text-slate-500 font-mono mb-1">A4</div><div class="text-sm font-semibold">결제 관리</div><div class="text-[0.7rem] text-slate-400 mt-1">환불·영수증 재발송</div></div>
+      <div class="glass rounded-xl p-4"><div class="text-xs text-slate-500 font-mono mb-1">A5</div><div class="text-sm font-semibold">구독 관리</div><div class="text-[0.7rem] text-slate-400 mt-1">활성·만료·다운그레이드</div></div>
+      <div class="glass rounded-xl p-4"><div class="text-xs text-slate-500 font-mono mb-1">A6</div><div class="text-sm font-semibold">공지사항</div><div class="text-[0.7rem] text-slate-400 mt-1">작성·게시·발송</div></div>
+      <div class="glass rounded-xl p-4"><div class="text-xs text-slate-500 font-mono mb-1">A7</div><div class="text-sm font-semibold">감사 로그</div><div class="text-[0.7rem] text-slate-400 mt-1">actor·action·target·IP</div></div>
+      <div class="glass rounded-xl p-4 border border-purple-500/30 bg-purple-500/5"><div class="text-xs text-purple-300 font-mono mb-1">RBAC</div><div class="text-sm font-semibold">권한 분리</div><div class="text-[0.7rem] text-slate-400 mt-1">슈퍼·운영·결제담당</div></div>
+      <div class="glass rounded-xl p-4 border border-emerald-500/30 bg-emerald-500/5"><div class="text-xs text-emerald-300 font-mono mb-1">SECURE</div><div class="text-sm font-semibold">IP 화이트리스트</div><div class="text-[0.7rem] text-slate-400 mt-1">옵션 2FA</div></div>
+    </div>
+  </section>
+
+  <!-- ============ INSIGHTS ============ -->
+  <section id="insights" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">INSIGHTS</h2>
+      <span class="text-xs font-mono text-rose-300">경쟁자 없음 · 사전 분석 차별화</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">공고 명확도 60/100. 모호 13개 + 누락 35개 + 암묵적 가정 10개를 사전 식별.</p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <!-- 모호 -->
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="pill bg-amber-500/15 text-amber-300 border border-amber-500/30">모호 13건</span>
+        </div>
+        <ul class="text-sm space-y-3">
+          <li><span class="text-amber-300 font-mono text-xs">M1</span> 분석 알고리즘 출처 (자사 vs 파트너)</li>
+          <li><span class="text-amber-300 font-mono text-xs">M2</span> "빅데이터" 실제 규모</li>
+          <li><span class="text-amber-300 font-mono text-xs">M4</span> "기본 게시판"의 "등" 범위</li>
+          <li><span class="text-amber-300 font-mono text-xs">M7</span> 자사 DB 연동 방식</li>
+          <li><span class="text-amber-300 font-mono text-xs">M8</span> "유사 공고" 정의</li>
+          <li class="text-xs text-slate-500 pt-2 border-t border-white/5">+ M3·M5·M6·M9~M13</li>
+        </ul>
+      </div>
+      <!-- 누락 -->
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">누락 35건</span>
+        </div>
+        <ul class="text-sm space-y-3">
+          <li><span class="text-rose-300 font-mono text-xs">N3</span> 세금계산서 발급 (B2B 필수)</li>
+          <li><span class="text-rose-300 font-mono text-xs">N4</span> 관심 공고 알림 기능</li>
+          <li><span class="text-rose-300 font-mono text-xs">N7</span> 결제 실패 재시도 흐름</li>
+          <li><span class="text-rose-300 font-mono text-xs">N18</span> 자사 DB 스키마 사양서</li>
+          <li><span class="text-rose-300 font-mono text-xs">N32</span> 호스팅 환경 명시</li>
+          <li class="text-xs text-slate-500 pt-2 border-t border-white/5">+ N1·N2·N5·N6·N8~N17·N19~N31·N33~N35</li>
+        </ul>
+      </div>
+      <!-- 가정 -->
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="pill bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">가정 10건</span>
+        </div>
+        <ul class="text-sm space-y-3">
+          <li><span class="text-cyan-300 font-mono text-xs">A1</span> 분석 결과(D8) 자사 사전 계산</li>
+          <li><span class="text-cyan-300 font-mono text-xs">A2</span> 데이터 50만 건 이하</li>
+          <li><span class="text-cyan-300 font-mono text-xs">A3</span> PG 일반 카드 정기결제</li>
+          <li><span class="text-cyan-300 font-mono text-xs">A5</span> 모바일 앱 미포함</li>
+          <li><span class="text-cyan-300 font-mono text-xs">A9</span> 회사 1 : 사용자 1 모델</li>
+          <li class="text-xs text-slate-500 pt-2 border-t border-white/5">+ A4·A6·A7·A8·A10</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUESTIONS ============ -->
+  <section id="questions" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">QUESTIONS</h2>
+      <span class="text-xs font-mono text-purple-300">발주자 질의 · 28건 중 핵심 10건</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">미팅 30분 안에 견적·일정 확정 가능 상태로 만드는 질문.</p>
+
+    <div class="space-y-2">
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q1</span>
+          <span class="font-medium text-sm flex-1">분석 결과(D8) 책임 경계는 자사 사전 계산인가, 파트너 자체 구현인가?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 space-y-2 text-xs text-slate-400">
+          <div>A. 자사 사전계산 → ✅ 본 견적 가능</div>
+          <div>B. 파트너 구현 → ⚠️ +6~8주, +400~600만원 별도 SOW</div>
+          <div>C. 하이브리드 (통계만 자사) → +2~4주</div>
+          <div class="text-cyan-300 mt-2">→ 본 프로젝트 가장 큰 변수. 미팅 첫 5분에 명확화 필수.</div>
+        </div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q2</span>
+          <span class="font-medium text-sm flex-1">누적 데이터 규모 + 일 신규 건수는?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 space-y-2 text-xs text-slate-400">
+          <div>A. < 10만 / < 1,000 → RDBMS 단독</div>
+          <div>B. 10만~500만 / 1,000~5,000 → + 파셜 인덱스 + 캐시</div>
+          <div>C. > 500만 → + ElasticSearch / OpenSearch</div>
+          <div>D. > 1,000만 → + ClickHouse 또는 데이터 레이크</div>
+        </div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q3</span>
+          <span class="font-medium text-sm flex-1">자사 DB 연동 인터페이스는?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 space-y-2 text-xs text-slate-400">
+          <div>A. DB 직결 (read-only 계정) — 강결합·보안 이슈</div>
+          <div>B. <span class="text-emerald-300">REST API (자사 제공) — 권장</span></div>
+          <div>C. GraphQL · D. 일배치 덤프 · E. CDC 스트리밍</div>
+        </div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q4</span>
+          <span class="font-medium text-sm flex-1">PG 사 선택 (토스 / 카카오 / 이니시스 / 나이스)?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">
+          <div class="text-emerald-300">권장: 토스페이먼츠 빌링 — REST 표준 우수, B2B 가맹 친화</div>
+        </div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q5</span>
+          <span class="font-medium text-sm flex-1">PG 가맹·빌링 부가 서비스 신청 상태는?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">통상 2~4주 심사. 신규 사업이면 +2주. 미진행 시 W17 베타 영향.</div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-amber-500/15 text-amber-300 border border-amber-500/30">🟡 Q11</span>
+          <span class="font-medium text-sm flex-1">키워드 검색 수준 (LIKE / FTS / ES / 임베딩)?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">A. LIKE — 단순, 정확도↓ / <span class="text-emerald-300">B. PostgreSQL FTS — 권장</span> / C. ES + Nori / D. 임베딩 + Vector DB</div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q12</span>
+          <span class="font-medium text-sm flex-1">알림 채널 (이메일·카톡·인앱·없음)?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">A. 이메일 (+1주, SES) / B. + 카톡 (+1주, 비즈메시지 가입·심사 + 건당 과금) / C. + 인앱 / D. 없음</div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-rose-500/15 text-rose-300 border border-rose-500/30">🔴 Q17</span>
+          <span class="font-medium text-sm flex-1">자사 DB 스키마 + 샘플 데이터 제공 시점?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">W1 시작일까지 ERD + 샘플(1,000+건) 필수. 미공개 시 일정 슬립 → R2 트리거.</div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-amber-500/15 text-amber-300 border border-amber-500/30">🟡 Q20</span>
+          <span class="font-medium text-sm flex-1">호스팅 (AWS / NCP / 자사 / Vercel)?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">권장: AWS (ECS Fargate + RDS + ElastiCache + SES). 22년 운영 경험. NCP는 국내 PG/SMS 친화.</div>
+      </details>
+      <details class="glass rounded-xl p-4 group">
+        <summary class="flex items-center gap-3">
+          <span class="pill bg-amber-500/15 text-amber-300 border border-amber-500/30">🟡 Q22</span>
+          <span class="font-medium text-sm flex-1">성능 SLA · 동시 접속자 · 가용성?</span>
+          <i data-lucide="chevron-right" class="chevron w-4 h-4 text-slate-400"></i>
+        </summary>
+        <div class="mt-4 pl-7 text-xs text-slate-400">권장: P95 < 1s · 동시 100명 · 99.5% (월 3.6시간 다운). RDS Multi-AZ + ElastiCache + Sentry.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ RISKS ============ -->
+  <section id="risks" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">RISKS</h2>
+      <span class="text-xs font-mono text-rose-300">리스크 매트릭스 · 15건</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">확률 × 영향 매트릭스. 점수 9 이상은 사전 계약서 명시 권고.</p>
+
+    <div class="glass rounded-2xl p-6">
+      <div class="grid grid-cols-4 gap-2 text-center text-xs">
+        <div></div>
+        <div class="text-slate-500">확률 하</div>
+        <div class="text-slate-500">확률 중</div>
+        <div class="text-slate-500">확률 상</div>
+
+        <div class="text-slate-500 self-center">영향 상</div>
+        <div class="risk-cell glass rounded-lg p-3 border border-amber-500/30 bg-amber-500/5">
+          <div class="font-mono text-amber-300 mb-1">R8 R14</div>
+          <div class="text-[0.65rem] text-slate-400">결제사고 / 보안</div>
+          <div class="text-[0.6rem] text-slate-500 mt-1">점수 6</div>
+        </div>
+        <div class="risk-cell glass rounded-lg p-3 border border-rose-500/40 bg-rose-500/10">
+          <div class="font-mono text-rose-300 mb-1">R1 R2 R4 R5</div>
+          <div class="text-[0.65rem] text-slate-400">분석경계/DB지연/시안수정/신뢰</div>
+          <div class="text-[0.6rem] text-rose-300 mt-1 font-bold">점수 9</div>
+        </div>
+        <div class="risk-cell glass rounded-lg p-3 border border-rose-500/40 bg-rose-500/10">
+          <div class="font-mono text-rose-300 mb-1">R3</div>
+          <div class="text-[0.65rem] text-slate-400">PG 가맹 지연</div>
+          <div class="text-[0.6rem] text-rose-300 mt-1 font-bold">점수 9</div>
+        </div>
+
+        <div class="text-slate-500 self-center">영향 중</div>
+        <div class="risk-cell glass rounded-lg p-3 border border-emerald-500/30 bg-emerald-500/5">
+          <div class="font-mono text-emerald-300 mb-1">R10 R12</div>
+          <div class="text-[0.65rem] text-slate-400">첨부정책/알림비용</div>
+          <div class="text-[0.6rem] text-slate-500 mt-1">점수 3-4</div>
+        </div>
+        <div class="risk-cell glass rounded-lg p-3 border border-amber-500/30 bg-amber-500/5">
+          <div class="font-mono text-amber-300 mb-1">R6 R7 R9 R11 R13</div>
+          <div class="text-[0.65rem] text-slate-400">빅데이터/등범위/품질/모바일/RBAC</div>
+          <div class="text-[0.6rem] text-slate-500 mt-1">점수 6</div>
+        </div>
+        <div class="risk-cell glass rounded-lg p-3 border border-rose-500/40 bg-rose-500/10">
+          <div class="font-mono text-rose-300 mb-1">R15</div>
+          <div class="text-[0.65rem] text-slate-400">단가 수익성</div>
+          <div class="text-[0.6rem] text-rose-300 mt-1 font-bold">점수 9</div>
+        </div>
+
+        <div class="text-slate-500 self-center">영향 하</div>
+        <div class="risk-cell glass rounded-lg p-3 opacity-50"><span class="text-[0.65rem] text-slate-600">—</span></div>
+        <div class="risk-cell glass rounded-lg p-3 opacity-50"><span class="text-[0.65rem] text-slate-600">—</span></div>
+        <div class="risk-cell glass rounded-lg p-3 opacity-50"><span class="text-[0.65rem] text-slate-600">—</span></div>
+      </div>
+
+      <!-- 연쇄 효과 -->
+      <div class="mt-8 pt-6 border-t border-white/5">
+        <div class="text-xs font-mono text-rose-300 mb-3">⚠️ 리스크 연쇄 효과 (ultrathink)</div>
+        <div class="ascii">
+연쇄 A:  R1=B (분석 변경) ──▶ R15 (예산 부족) ──▶ R5 (분쟁)
+연쇄 B:  R3 (PG 지연) ──▶ W4 데모 지연 ──▶ R5 (신뢰 저하) ──▶ 결제 지연
+연쇄 C:  R4 (시안 무한 수정) ──▶ R15 (적자 심화)
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE ============ -->
+  <section id="architecture" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">ARCHITECTURE</h2>
+      <span class="text-xs font-mono text-cyan-300">Hexagonal · 5 Bounded Contexts · 6 ADR</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">Spring Boot 3.x + Java 21 Virtual Threads + 헥사고날 (Ports & Adapters).</p>
+
+    <!-- Tabs -->
+    <div role="tablist" class="flex flex-wrap gap-2 mb-6">
+      <button role="tab" aria-selected="true" data-tab="diagram" class="tab-btn glass rounded-lg px-4 py-2 text-sm border border-white/10">📐 다이어그램</button>
+      <button role="tab" aria-selected="false" data-tab="adr" class="tab-btn glass rounded-lg px-4 py-2 text-sm border border-white/10">📜 ADR 6건</button>
+      <button role="tab" aria-selected="false" data-tab="code" class="tab-btn glass rounded-lg px-4 py-2 text-sm border border-white/10">💻 코드</button>
+      <button role="tab" aria-selected="false" data-tab="api" class="tab-btn glass rounded-lg px-4 py-2 text-sm border border-white/10">🔌 API 23</button>
+    </div>
+
+    <!-- Tab content -->
+    <div data-panel="diagram" class="glass rounded-2xl p-6">
+      <div class="ascii overflow-x-auto">
+┌───────────────────────────────────────────────────────────────┐
+│                       Presentation                            │
+│   Next.js 15 (App Router · RSC)  +  shadcn/ui  +  Recharts    │
+└──────────────────────────────┬────────────────────────────────┘
+                               │ REST/JSON · JWT
+┌──────────────────────────────▼────────────────────────────────┐
+│                 Application Layer (Use Cases)                 │
+│  AuthApplicationService · SubscriptionApplicationService      │
+│  TenderViewApplicationService · ScrapApplicationService       │
+│  PlannedBidApplicationService · AdminApplicationService       │
+└──────────────────────────────┬────────────────────────────────┘
+                               │
+┌──────────────────────────────▼────────────────────────────────┐
+│                     Domain Layer · 5 Contexts                 │
+│  ┌─────────┐ ┌─────────────┐ ┌──────────┐ ┌────────┐ ┌─────┐ │
+│  │identity │ │subscription │ │tenderview│ │tracking│ │admin│ │
+│  └─────────┘ └─────────────┘ └──────────┘ └────────┘ └─────┘ │
+│   User/Email   Plan/Sub/Pay   read-only   Scrap/Plan  Notice│
+│   bizRegNo     billingKey     Provider    StateMachine AuditLog
+└──────────────────────────────┬────────────────────────────────┘
+                               │ Port (Interface)
+┌──────────────────────────────▼────────────────────────────────┐
+│                       Infrastructure                          │
+│  PostgreSQL (RDS Multi-AZ) · Redis · S3                       │
+│  TenderProviderHttpAdapter · TossPaymentsAdapter              │
+│  BizRegVerifierAdapter · SesEmailSender                       │
+└────────────────┬───────────────┬────────────────┬─────────────┘
+                 ▼               ▼                ▼
+            자사 DB API     토스페이먼츠     국세청 + AWS SES
+      </div>
+    </div>
+
+    <div data-panel="adr" class="glass rounded-2xl p-6 hidden">
+      <div class="space-y-3">
+        <div class="border-l-4 border-purple-500 pl-4 py-1"><div class="text-xs font-mono text-purple-300">ADR-1</div><div class="font-semibold text-sm">자사 DB는 REST API 어댑터 우선 (DB 직결은 비상수단)</div><div class="text-xs text-slate-400 mt-1">강결합 회피 + 자사 스키마 변경 시 영향 최소화 + 캐싱 가능</div></div>
+        <div class="border-l-4 border-pink-500 pl-4 py-1"><div class="text-xs font-mono text-pink-300">ADR-2</div><div class="font-semibold text-sm">Hexagonal Architecture 채택 (Ports & Adapters)</div><div class="text-xs text-slate-400 mt-1">PG·이메일·자사 DB 등 외부 의존이 많고 향후 교체 가능성 큼</div></div>
+        <div class="border-l-4 border-emerald-500 pl-4 py-1"><div class="text-xs font-mono text-emerald-300">ADR-3</div><div class="font-semibold text-sm">Bounded Context 5개 분리 (모듈러 모놀리식)</div><div class="text-xs text-slate-400 mt-1">향후 마이크로서비스 분리 가능성, 책임 명확화. 현재 단일 배포</div></div>
+        <div class="border-l-4 border-cyan-500 pl-4 py-1"><div class="text-xs font-mono text-cyan-300">ADR-4</div><div class="font-semibold text-sm">결제 빌링 — Spring Scheduling + ShedLock (Quartz 대체)</div><div class="text-xs text-slate-400 mt-1">단순 cron으로 충분, multi-task lock으로 중복 방지</div></div>
+        <div class="border-l-4 border-amber-500 pl-4 py-1"><div class="text-xs font-mono text-amber-300">ADR-5</div><div class="font-semibold text-sm">검색 — PostgreSQL FTS 우선, 50만 초과 시 OpenSearch</div><div class="text-xs text-slate-400 mt-1">인프라 단순화. SearchProvider 인터페이스로 교체 비용 최소화</div></div>
+        <div class="border-l-4 border-rose-500 pl-4 py-1"><div class="text-xs font-mono text-rose-300">ADR-6</div><div class="font-semibold text-sm">Redis 캐시 — 검색 60s · 분석 300s</div><div class="text-xs text-slate-400 mt-1">자사 DB 호출 비용·지연 절감 + 데이터 신선도 균형</div></div>
+      </div>
+    </div>
+
+    <div data-panel="code" class="glass rounded-2xl p-6 hidden">
+      <pre class="text-xs"><code class="language-java">// SubscriptionApplicationService.java
+@Service
+@RequiredArgsConstructor
+public class SubscriptionApplicationService {
+    private final PaymentGatewayPort pg;
+    private final SubscriptionRepository subRepo;
+    private final UserRepository userRepo;
+    private final EmailSenderPort email;
+
+    @Transactional
+    public Subscription subscribe(UUID userId, UUID planId, String billingKeyToken) {
+        User user = userRepo.findActivated(userId)
+            .orElseThrow(() -> new BusinessException(USER_NOT_ACTIVATED));
+
+        Plan plan = planRepo.findActive(planId)
+            .orElseThrow(() -> new BusinessException(PLAN_NOT_AVAILABLE));
+
+        BillingKey key = pg.issueBillingKey(billingKeyToken);
+        Subscription sub = Subscription.create(user, plan, key);
+
+        // 즉시 1회 결제
+        Payment payment = Payment.charge(sub, plan.getPrice());
+        pg.charge(key, plan.getPrice(), payment.getId() /* 멱등 키 */);
+
+        sub.activate();
+        user.upgrade(sub);
+        email.sendReceipt(user, payment);
+
+        return subRepo.save(sub);
+    }
+}
+
+// BillingScheduler.java — C3 컬레보레이션
+@Component
+@RequiredArgsConstructor
+public class BillingScheduler {
+    @Scheduled(cron = "0 0 * * * *")
+    @SchedulerLock(name = "billing-tick", lockAtMostFor = "30m")
+    public void tick() {
+        var dueSubs = subRepo.findActiveDueAt(Instant.now());
+        for (var sub : dueSubs) {
+            try {
+                var result = sub.renew(pg);
+                if (result.isFailure()) handleFailure(sub);
+            } catch (PgTimeoutException e) {
+                reconcileQueue.enqueue(sub.getId()); // 멱등성 보장
+            }
+        }
+    }
+}</code></pre>
+    </div>
+
+    <div data-panel="api" class="glass rounded-2xl p-6 hidden">
+      <div class="grid md:grid-cols-2 gap-2 text-xs font-mono">
+        <div class="space-y-1">
+          <div class="text-slate-500 mb-2 text-[0.7rem]">— AUTH —</div>
+          <div><span class="text-emerald-400">POST</span> /api/auth/signup</div>
+          <div><span class="text-cyan-400">GET</span> /api/auth/verify</div>
+          <div><span class="text-emerald-400">POST</span> /api/auth/login</div>
+          <div><span class="text-emerald-400">POST</span> /api/auth/refresh</div>
+          <div><span class="text-emerald-400">POST</span> /api/auth/password/reset</div>
+
+          <div class="text-slate-500 mt-3 mb-2 text-[0.7rem]">— SUBSCRIPTION —</div>
+          <div><span class="text-cyan-400">GET</span> /api/plans</div>
+          <div><span class="text-emerald-400">POST</span> /api/subscriptions</div>
+          <div><span class="text-emerald-400">POST</span> /api/subscriptions/&#123;id&#125;/cancel</div>
+          <div><span class="text-cyan-400">GET</span> /api/subscriptions/me</div>
+          <div><span class="text-cyan-400">GET</span> /api/payments/me</div>
+          <div><span class="text-emerald-400">POST</span> /api/webhooks/toss</div>
+
+          <div class="text-slate-500 mt-3 mb-2 text-[0.7rem]">— TENDER VIEW —</div>
+          <div><span class="text-emerald-400">POST</span> /api/tenders/search</div>
+        </div>
+        <div class="space-y-1">
+          <div><span class="text-cyan-400">GET</span> /api/tenders/&#123;id&#125;</div>
+          <div><span class="text-cyan-400">GET</span> /api/awards</div>
+          <div><span class="text-cyan-400">GET</span> /api/analytics/&#123;id&#125;</div>
+
+          <div class="text-slate-500 mt-3 mb-2 text-[0.7rem]">— TRACKING —</div>
+          <div><span class="text-emerald-400">POST</span> /api/scraps</div>
+          <div><span class="text-cyan-400">GET</span> /api/scraps</div>
+          <div><span class="text-rose-400">DEL</span> /api/scraps/&#123;id&#125;</div>
+          <div><span class="text-emerald-400">POST</span> /api/planned-bids</div>
+          <div><span class="text-amber-400">PATCH</span> /api/planned-bids/&#123;id&#125;</div>
+
+          <div class="text-slate-500 mt-3 mb-2 text-[0.7rem]">— ADMIN —</div>
+          <div><span class="text-cyan-400">GET</span> /api/admin/users</div>
+          <div><span class="text-amber-400">PATCH</span> /api/admin/users/&#123;id&#125;</div>
+          <div><span class="text-cyan-400">GET</span> /api/admin/payments</div>
+          <div><span class="text-emerald-400">POST</span> /api/admin/payments/&#123;id&#125;/refund</div>
+          <div><span class="text-emerald-400">POST</span> /api/admin/notices</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE ============ -->
+  <section id="timeline" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">TIMELINE</h2>
+      <span class="text-xs font-mono text-emerald-300">22주 + 4주 버퍼 = 6개월</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">Phase 4단계 + 마일스톤 8개 + 검수 포인트 5회 + 베타 + 정식.</p>
+
+    <div class="glass rounded-2xl p-6 overflow-x-auto">
+      <div class="min-w-[720px]">
+        <!-- Header -->
+        <div class="grid grid-cols-[120px_repeat(22,1fr)] gap-1 text-[0.65rem] text-slate-500 mb-2">
+          <div></div>
+          <div>W1</div><div>W2</div><div>W3</div><div>W4</div><div>W5</div><div>W6</div>
+          <div>W7</div><div>W8</div><div>W9</div><div>W10</div><div>W11</div><div>W12</div>
+          <div>W13</div><div>W14</div><div>W15</div><div>W16</div><div>W17</div><div>W18</div>
+          <div>W19</div><div>W20</div><div>W21</div><div>W22</div>
+        </div>
+        <!-- Phase 1 -->
+        <div class="grid grid-cols-[120px_repeat(22,1fr)] gap-1 mb-2">
+          <div class="text-xs text-purple-300 font-semibold">P1 Identity+Sub</div>
+          <div class="bg-purple-500/40 rounded h-6 col-span-4 flex items-center justify-center text-[0.6rem] text-purple-100">가입~첫결제</div>
+        </div>
+        <!-- Phase 2 -->
+        <div class="grid grid-cols-[120px_repeat(22,1fr)] gap-1 mb-2">
+          <div class="text-xs text-pink-300 font-semibold">P2 TenderView</div>
+          <div class="col-span-4"></div>
+          <div class="bg-pink-500/40 rounded h-6 col-span-6 flex items-center justify-center text-[0.6rem] text-pink-100">검색·상세·차트</div>
+        </div>
+        <!-- Phase 3 -->
+        <div class="grid grid-cols-[120px_repeat(22,1fr)] gap-1 mb-2">
+          <div class="text-xs text-emerald-300 font-semibold">P3 Track+Admin</div>
+          <div class="col-span-10"></div>
+          <div class="bg-emerald-500/40 rounded h-6 col-span-6 flex items-center justify-center text-[0.6rem] text-emerald-100">스크랩·빌링·어드민</div>
+        </div>
+        <!-- Phase 4 -->
+        <div class="grid grid-cols-[120px_repeat(22,1fr)] gap-1 mb-4">
+          <div class="text-xs text-cyan-300 font-semibold">P4 Polish+Deploy</div>
+          <div class="col-span-16"></div>
+          <div class="bg-cyan-500/40 rounded h-6 col-span-6 flex items-center justify-center text-[0.6rem] text-cyan-100">디자인·배포·인수</div>
+        </div>
+        <!-- Milestones -->
+        <div class="grid grid-cols-[120px_repeat(22,1fr)] gap-1 text-[0.6rem]">
+          <div class="text-slate-500">마일스톤</div>
+          <div></div><div></div><div></div>
+          <div class="text-amber-300 text-center">●M2</div>
+          <div></div><div></div>
+          <div class="text-amber-300 text-center">●M3</div>
+          <div></div><div></div>
+          <div class="text-amber-300 text-center">●M4</div>
+          <div></div><div></div><div></div>
+          <div class="text-amber-300 text-center">●M5</div>
+          <div></div><div></div><div></div>
+          <div class="text-amber-300 text-center">●M6</div>
+          <div></div>
+          <div class="text-amber-300 text-center">●M7</div>
+          <div></div>
+          <div class="text-amber-300 text-center">●M8</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 grid md:grid-cols-4 gap-3 text-xs">
+      <div class="glass rounded-lg p-3"><div class="font-mono text-amber-300 text-[0.65rem] mb-1">M2 · W4</div><div>가입~결제 E2E 데모</div></div>
+      <div class="glass rounded-lg p-3"><div class="font-mono text-amber-300 text-[0.65rem] mb-1">M4 · W10</div><div>분석 대시보드 (차트 5종)</div></div>
+      <div class="glass rounded-lg p-3"><div class="font-mono text-amber-300 text-[0.65rem] mb-1">M6 · W18</div><div>베타 오픈 (실 회원 5명)</div></div>
+      <div class="glass rounded-lg p-3"><div class="font-mono text-amber-300 text-[0.65rem] mb-1">M8 · W22</div><div>정식 오픈 + 인수인계</div></div>
+    </div>
+  </section>
+
+  <!-- ============ WHY-US ============ -->
+  <section id="why-us" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-baseline gap-3 mb-2">
+      <h2 class="text-3xl font-bold">WHY-US</h2>
+      <span class="text-xs font-mono text-pink-300">차별화 5건</span>
+    </div>
+    <p class="text-slate-400 text-sm mb-6">22년 백엔드 + AI/LLM 통합 + 모델링 기반 설계.</p>
+
+    <div class="glass rounded-2xl p-6 overflow-x-auto">
+      <table class="w-full text-sm min-w-[600px]">
+        <thead>
+          <tr class="border-b border-white/10 text-xs text-slate-400">
+            <th class="text-left py-3 pr-4 font-medium">항목</th>
+            <th class="py-3 px-4 font-medium text-slate-500">일반 지원자</th>
+            <th class="py-3 px-4 font-medium text-pink-300">본 제안</th>
+          </tr>
+        </thead>
+        <tbody class="text-xs">
+          <tr class="border-b border-white/5">
+            <td class="py-3 pr-4 text-slate-300">사전 분석</td>
+            <td class="py-3 px-4 text-center text-slate-500">자기소개 1~2p</td>
+            <td class="py-3 px-4 text-center text-emerald-300">8개 분석 + EPM/RSM 11개 모델</td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 pr-4 text-slate-300">아키텍처 설계</td>
+            <td class="py-3 px-4 text-center text-slate-500">레이어드 모놀리식</td>
+            <td class="py-3 px-4 text-center text-emerald-300">Hexagonal + Bounded Context 5</td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 pr-4 text-slate-300">결제 안정성</td>
+            <td class="py-3 px-4 text-center text-slate-500">표준 PG 연동</td>
+            <td class="py-3 px-4 text-center text-emerald-300">멱등성 + ShedLock + 시간 압축 테스트</td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 pr-4 text-slate-300">진행 가시성</td>
+            <td class="py-3 px-4 text-center text-slate-500">월 1회 보고</td>
+            <td class="py-3 px-4 text-center text-emerald-300">매주 보고 + 격주 동작 데모</td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 pr-4 text-slate-300">옵션 제안</td>
+            <td class="py-3 px-4 text-center text-slate-500">단가만 제시</td>
+            <td class="py-3 px-4 text-center text-emerald-300">SOW A/B/C 시나리오 + AI 추천 알고리즘 옵션</td>
+          </tr>
+          <tr>
+            <td class="py-3 pr-4 text-slate-300">경력</td>
+            <td class="py-3 px-4 text-center text-slate-500">대체로 5~10년</td>
+            <td class="py-3 px-4 text-center text-emerald-300">22년 + AI/LLM 통합 (RAG · Spring Security · Hexagonal)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="cta" class="max-w-7xl mx-auto px-6 py-16">
+    <div class="glass rounded-3xl p-8 md:p-12 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">미팅 30분이면 견적·일정 확정 가능합니다.</h2>
+      <p class="text-slate-300 mb-8 max-w-2xl mx-auto">V1~V5 5개 결정 변수 · SOW 시나리오 A/B/C · 22주 일정 · 분할 결제까지 모두 준비되어 있습니다.</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="https://www.wishket.com/project/154913/" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-semibold shadow-lg shadow-purple-500/30">위시켓 메시지 보내기</a>
+        <a href="./nonit.html" class="px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5">비IT 버전 보기 →</a>
+      </div>
+      <div class="mt-8 pt-6 border-t border-white/5 text-xs text-slate-500 flex flex-wrap items-center justify-center gap-4">
+        <span>예산 800만원</span><span>·</span>
+        <span>180일</span><span>·</span>
+        <span>마감 2026-05-11</span><span>·</span>
+        <span>지원자 10명</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-white/10 mt-12 py-10 text-center text-sm text-slate-500">
+    <div class="max-w-7xl mx-auto px-6">
+      <p>이 페이지는 위시켓 프로젝트 <span class="font-mono text-purple-400">#154913</span> 지원용 레퍼런스 UI입니다. 실제 서비스가 아니며 데이터는 데모 목업입니다.</p>
+      <p class="mt-2">Generated by <span class="font-mono">wishket-refui</span> · 2026-04-28 · IT 버전</p>
+    </div>
+  </footer>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-selected', 'false'));
+        btn.setAttribute('aria-selected', 'true');
+        document.querySelectorAll('[data-panel]').forEach(p => p.classList.add('hidden'));
+        document.querySelector(`[data-panel="${target}"]`).classList.remove('hidden');
+        if (target === 'code') Prism.highlightAll();
+      });
+    });
+
+    // Charts
+    if (typeof Chart !== 'undefined') {
+      Chart.defaults.color = '#94a3b8';
+      Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+
+      // Search KPI sparkline
+      new Chart(document.getElementById('kpi-search'), {
+        type: 'line',
+        data: { labels: ['10k','50k','100k','250k','500k'], datasets: [{ data: [0.2,0.35,0.5,0.65,0.8], borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.15)', fill: true, tension: 0.4 }] },
+        options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } }, elements: { point: { radius: 0 } } }
+      });
+
+      // Phase doughnut
+      new Chart(document.getElementById('chart-phase'), {
+        type: 'doughnut',
+        data: { labels: ['P1 Identity+Sub (4w)', 'P2 TenderView (6w)', 'P3 Track+Admin (6w)', 'P4 Polish (6w)'], datasets: [{ data: [4,6,6,6], backgroundColor: ['#a78bfa','#f472b6','#34d399','#22d3ee'], borderWidth: 0 }] },
+        options: { plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } }
+      });
+
+      // ROI line
+      new Chart(document.getElementById('chart-roi'), {
+        type: 'bar',
+        data: {
+          labels: ['모니터링','관심정리','투찰가산정','낙찰추적'],
+          datasets: [
+            { label: '현행', data: [120, 30, 90, 60], backgroundColor: '#475569' },
+            { label: '도입후', data: [10, 5, 12, 5], backgroundColor: '#a78bfa' }
+          ]
+        },
+        options: { plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } }, scales: { y: { beginAtZero: true, title: { display: true, text: '분/일' } } } }
+      });
+    }
+
+    // Lucide icons
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // CountUp on first paint
+    document.querySelectorAll('.countup').forEach(el => {
+      const target = parseFloat(el.textContent);
+      if (isNaN(target)) return;
+      let cur = 0;
+      const step = target / 30;
+      const interval = setInterval(() => {
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(interval); }
+        el.textContent = (target % 1 === 0) ? Math.floor(cur) : cur.toFixed(1);
+      }, 30);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"\\\\\\necho \\\"=== 특화 용어 검증 (EPM/RSM/UC 0건이어야 함) ===\\\" && \\\\\\ngrep -cE \\\"EPM 47|RSM 7|UC[0-9]+\\\" it.html nonit.html 2>/dev/null && \\\\\\necho \\\"\\\" && \\\\\\necho \\\"=== 비난조 검증 (🚨/비드 포기/비현실적 0건이어야 함...",
+  "error": "Exit code 1\n=== 특화 용어 검증 (EPM/RSM/UC 0건이어야 함) ===\nnonit.html:0\nit.html:0",
+  "timestamp": "2026-04-29T12:28:01.250Z",
+  "retry_count": 1
+}

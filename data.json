@@ -1,0 +1,80 @@
+{
+  "project": {
+    "id": "154913",
+    "title": "공공기관 입찰 정보 및 데이터 분석 구독형 웹 서비스 구축",
+    "shortTitle": "공공 입찰 정보 구독 SaaS",
+    "budget": "8,000,000원",
+    "duration": "180일",
+    "deadline": "2026-05-11",
+    "applicants": 10,
+    "client": "go******",
+    "clientLocation": "대구광역시 수성구",
+    "wishketUrl": "https://www.wishket.com/project/154913/"
+  },
+  "topInsights": [
+    { "id": "I1", "priority": "최우선", "title": "분석 알고리즘(D8) 책임 경계", "detail": "자사 사전 계산 vs 파트너 구현 → 일정 ±6~8주, 예산 ±50%" },
+    { "id": "I2", "priority": "차순위", "title": "자사 DB 연동 인터페이스", "detail": "REST API · DB 직결 · 일배치 · CDC 중 어느 방식인지" },
+    { "id": "I3", "priority": "사전 준비", "title": "PG 가맹·사업자등록 상태", "detail": "토스 빌링 가맹 통상 2~4주 심사. 신규 사업이면 +2주" }
+  ],
+  "kpi": {
+    "analysisDocs": 8,
+    "epmRsmModels": 11,
+    "apis": 23,
+    "dbTables": 11,
+    "screens": 27,
+    "weeks": 22,
+    "risks": 15,
+    "boundedContexts": 5,
+    "adapters": 6,
+    "testCoverage": 78,
+    "searchP95": 0.8
+  },
+  "techStack": {
+    "language": "Java 21",
+    "framework": "Spring Boot 3.x",
+    "frontend": "Next.js 15 (App Router) + TypeScript",
+    "ui": "Tailwind CSS + shadcn/ui",
+    "chart": "Recharts",
+    "db": "PostgreSQL 16",
+    "orm": "Spring Data JPA + QueryDSL",
+    "cache": "Redis 7",
+    "auth": "Spring Security + JWT (RS256)",
+    "payment": "토스페이먼츠 빌링",
+    "email": "AWS SES",
+    "scheduler": "Spring Scheduling + ShedLock",
+    "cloud": "AWS ECS Fargate + RDS Multi-AZ + ElastiCache + S3 + SES",
+    "ci": "GitHub Actions",
+    "monitoring": "CloudWatch + Sentry"
+  },
+  "boundedContexts": [
+    { "name": "identity", "role": "회사·사용자·인증·사업자번호 검증" },
+    { "name": "subscription", "role": "플랜·구독·결제·환불·세금계산서" },
+    { "name": "tenderview", "role": "공고·낙찰·분석 read-only View (외부 위임)" },
+    { "name": "tracking", "role": "스크랩·참여 예정 상태 머신" },
+    { "name": "admin", "role": "회원·결제·공지·감사로그" }
+  ],
+  "adrs": [
+    { "id": "ADR-1", "decision": "자사 DB는 REST API 어댑터 우선 (DB 직결은 비상수단)" },
+    { "id": "ADR-2", "decision": "Hexagonal Architecture (Ports & Adapters)" },
+    { "id": "ADR-3", "decision": "Bounded Context 5개 모듈러 모놀리식" },
+    { "id": "ADR-4", "decision": "Spring Scheduling + ShedLock (Quartz 대체)" },
+    { "id": "ADR-5", "decision": "PostgreSQL FTS 우선, 50만 초과 시 OpenSearch" },
+    { "id": "ADR-6", "decision": "Redis 캐시 — 검색 60s · 분석 300s" }
+  ],
+  "phases": [
+    { "id": "P1", "name": "Identity + Subscription Skeleton", "weeks": "W1~W4", "milestone": "M2 가입~첫결제 동작" },
+    { "id": "P2", "name": "TenderView 검색·상세·분석", "weeks": "W5~W10", "milestone": "M4 분석 대시보드" },
+    { "id": "P3", "name": "Tracking + Billing 자동화 + Admin", "weeks": "W11~W16", "milestone": "M5 어드민 운영" },
+    { "id": "P4", "name": "디자인 마감 + 배포 + 인수인계", "weeks": "W17~W22", "milestone": "M6/M7/M8 베타~정식~인수" }
+  ],
+  "topRisks": [
+    { "id": "R1", "name": "분석 알고리즘 책임 변경", "score": 9, "mitigation": "계약서 명시 + 별도 SOW" },
+    { "id": "R2", "name": "자사 DB 사양 미공개", "score": 9, "mitigation": "Mock 우선 + W1 마감 합의" },
+    { "id": "R3", "name": "PG 가맹·사업자등록 지연", "score": 9, "mitigation": "착수 즉시 병행" },
+    { "id": "R4", "name": "디자인 시안 무한 수정", "score": 9, "mitigation": "계약서 수정 횟수 명시" },
+    { "id": "R5", "name": "발주자 신뢰도 (인증 미완료)", "score": 9, "mitigation": "분할 결제 + 위시켓 안전결제" },
+    { "id": "R15", "name": "단가 수익성 부족", "score": 9, "mitigation": "AI 코딩 효율 + 옵션 견적" }
+  ],
+  "renderDate": "2026-04-28",
+  "version": "wishket-refui v2 (refui only)"
+}
